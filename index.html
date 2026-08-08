@@ -2,19 +2,24 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#2B4A3C">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Gerador de Etiquetas">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3C/text%3E%3C/svg%3E">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3C/text%3E%3C/svg%3E">
+  
+  <!-- Ícones para tela de início do celular -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3Ctext%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3Ctext%3E%3C/svg%3E">
+  
   <title>Gerador de Etiquetas</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
   <style>
     :root{
       --paper:#F4F5F1;
@@ -32,7 +37,7 @@
       --danger:#9C4A3C;
     }
 
-    *{ box-sizing:border-box; }
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
 
     body{
       margin:0;
@@ -40,17 +45,18 @@
       color:var(--ink);
       font-family:'Public Sans', ui-sans-serif, sans-serif;
       -webkit-font-smoothing:antialiased;
+      touch-action: manipulation;
     }
 
     .app{
       max-width:1080px;
       margin:0 auto;
-      padding:48px 24px 100px;
+      padding:24px 16px 100px;
     }
 
     /* ---------------- CABEÇALHO ---------------- */
     header.title{
-      margin-bottom:36px;
+      margin-bottom:24px;
     }
 
     .eyebrow{
@@ -75,7 +81,7 @@
     header.title h1{
       font-family:'Fraunces', serif;
       font-weight:500;
-      font-size:34px;
+      font-size:28px;
       letter-spacing:-0.01em;
       margin:0 0 8px;
       color:var(--ink);
@@ -88,7 +94,6 @@
       line-height:1.5;
     }
 
-    /* réguazinha decorativa — remete às medidas de precisão do gerador */
     .ruler{
       display:flex;
       align-items:flex-end;
@@ -108,17 +113,18 @@
       background:var(--paper-card);
       border:1px solid var(--line);
       border-top:2px solid var(--forest);
-      padding:26px 26px 24px;
-      margin-bottom:22px;
+      padding:20px 18px 18px;
+      margin-bottom:16px;
       box-shadow:0 1px 2px rgba(32,36,31,0.03);
+      border-radius: 8px;
     }
 
     .panel-head{
       display:flex;
       align-items:center;
       gap:12px;
-      margin-bottom:20px;
-      padding-bottom:14px;
+      margin-bottom:16px;
+      padding-bottom:12px;
       border-bottom:1px solid var(--line-soft);
     }
 
@@ -139,20 +145,16 @@
     .panel-head h2{
       font-family:'Fraunces', serif;
       font-weight:500;
-      font-size:16px;
+      font-size:15px;
       letter-spacing:0.01em;
       margin:0;
       color:var(--ink);
     }
 
-    .panel-head .lock-toggle{
-      margin-left:auto;
-    }
-
     .grid-fields{
       display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
-      gap:16px;
+      grid-template-columns:repeat(auto-fit, minmax(140px,1fr));
+      gap:12px;
     }
 
     .field{
@@ -169,23 +171,19 @@
       margin-bottom:6px;
     }
 
-    /* ========================================================== */
-    /* AQUI COMEÇAM AS ALTERAÇÕES PARA DEIXAR IGUAL À IMAGEM      */
-    /* ========================================================== */
+    /* CAMPO DE TEXTO ESTILIZADO (BORDA VERDE E CANTOS REDONDOS) */
     .field input, .field select, .field textarea{
       width:100%;
-      padding:9px 10px;
+      padding: 12px 10px; 
       
-      /* COR DA BORDA E FUNDO IGUAL À IMAGEM */
-      border: 2px solid #2d4f40; /* Borda verde escura e mais grossa */
-      background: #ffffff;       /* Fundo branco puro */
+      border: 2px solid #2d4f40; 
+      background: #ffffff;       
       
       font-family:'IBM Plex Mono', ui-monospace, monospace;
-      font-size:13px;
+      font-size:14px;
       font-weight:500;
       color:var(--ink);
       
-      /* CANTOS ARREDONDADOS */
       border-radius: 6px; 
       
       transition: border-color .15s ease, box-shadow .15s ease;
@@ -193,7 +191,7 @@
     
     .field input:focus, .field select:focus, .field textarea:focus{
       outline:none;
-      border-color: #1e362b; /* Cor um pouco mais escura no foco */
+      border-color: #1e362b; 
       box-shadow: 0 0 0 3px rgba(45, 79, 64, 0.2);
     }
     
@@ -201,6 +199,7 @@
       font-family:'Public Sans', sans-serif;
     }
 
+    /* Quando o campo está desabilitado (travado) */
     .field input:disabled{
       background:var(--line-soft);
       color:var(--muted);
@@ -208,55 +207,49 @@
       cursor:not-allowed;
     }
 
-    /* Estilo das SETINHAS (botões de aumentar/diminuir) */
+    /* Estilo das SETINHAS */
     .field input[type="number"]{
-      /* Garante espaço à direita para a seta não cobrir o texto */
-      padding-right: 30px;
-    }
-    
-    /* No Firefox, exibe as setas nativas */
-    .field input[type="number"]{
-      -moz-appearance: textfield; /* Limpa pra gente configurar */
+      padding-right: 34px;
+      -moz-appearance: textfield; 
     }
     .field input[type="number"]:not(:disabled){
       -moz-appearance: spinbutton;
     }
 
-    /* No Chrome/Edge/Safari, garante que as setas apareçam nativas */
     .field input[type="number"]:not(:disabled)::-webkit-inner-spin-button,
     .field input[type="number"]:not(:disabled)::-webkit-outer-spin-button {
       -webkit-appearance: inner-spin-button;
       opacity: 1;
-      height: 80%;       /* Ajuste fino do tamanho da seta */
+      height: 90%;       
       position: absolute;
-      right: 4px;        /* Recuo lateral */
-      top: 10%;
-      bottom: 10%;
+      right: 4px;        
+      top: 5%;
+      bottom: 5%;
       margin: auto;
     }
-    /* ========================================================== */
-    /* FIM DAS ALTERAÇÕES                                         */
-    /* ========================================================== */
 
     /* ---------------- MODOS / TOGGLES ---------------- */
     .mode-toggle{
-      display:inline-flex;
+      display:flex;
       border:1px solid var(--forest);
-      border-radius:3px;
+      border-radius:6px;
       overflow:hidden;
-      margin-bottom:20px;
+      margin-bottom:16px;
+      width: 100%;
     }
     .mode-toggle button{
-      padding:9px 18px;
+      flex: 1;
+      padding:12px 18px;
       border:none;
       background:#fff;
       color:var(--forest);
       font-family:'Public Sans', sans-serif;
-      font-size:12px;
+      font-size:13px;
       font-weight:600;
       letter-spacing:0.3px;
       cursor:pointer;
       transition:background .15s ease, color .15s ease;
+      touch-action: manipulation;
     }
     .mode-toggle button + button{ border-left:1px solid var(--forest); }
     .mode-toggle button.active{
@@ -272,7 +265,7 @@
       color:var(--brass-deep);
       border:1px solid var(--brass);
       border-radius:20px;
-      padding:6px 14px;
+      padding:8px 14px;
       font-family:'Public Sans', sans-serif;
       font-size:11.5px;
       font-weight:600;
@@ -280,6 +273,7 @@
       cursor:pointer;
       margin-left:auto;
       transition:background .15s ease;
+      touch-action: manipulation;
     }
     .lock-btn:hover{ background:#dfcda3; }
     .lock-btn.unlocked{
@@ -307,9 +301,9 @@
       gap:10px;
       background:var(--line-soft);
       border:1px solid var(--line);
-      border-radius:3px;
+      border-radius:6px;
       padding:12px 14px;
-      margin-bottom:18px;
+      margin-bottom:16px;
       font-size:12.5px;
       color:var(--ink-soft);
       line-height:1.5;
@@ -319,49 +313,59 @@
     /* ---------------- AÇÕES ---------------- */
     .actions{
       display:flex;
+      flex-direction: column;
       gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
+      align-items:stretch;
     }
 
     button.primary{
       background:var(--forest);
       color:#fff;
       border:none;
-      padding:13px 26px;
+      padding:14px 26px;
       font-family:'Public Sans', sans-serif;
-      font-size:13px;
+      font-size:15px;
       font-weight:600;
       letter-spacing:0.3px;
-      border-radius:3px;
+      border-radius:6px;
       cursor:pointer;
       transition:background .15s ease, transform .1s ease;
+      touch-action: manipulation;
+      width: 100%;
     }
-    button.primary:hover{ background:var(--forest-deep); }
-    button.primary:active{ transform:translateY(1px); }
+    button.primary:active{ transform:translateY(2px); background: var(--forest-deep); }
 
     button.primary.brass{
       background:var(--brass);
     }
-    button.primary.brass:hover{ background:var(--brass-deep); }
+    button.primary.brass:active{ background:var(--brass-deep); }
 
     .count-badge{
       font-family:'IBM Plex Mono', monospace;
       font-size:12px;
       color:var(--ink-soft);
-      margin-left:auto;
+      text-align: center;
       background:var(--line-soft);
-      padding:8px 14px;
+      padding:10px 14px;
       border-radius:20px;
+      margin-top: 6px;
     }
 
     /* ---------------- ÁREA DE VISUALIZAÇÃO ---------------- */
     .sheet-wrap{
       background:#EFEFE9;
       border:1px solid var(--line);
-      padding:28px;
+      padding:12px;
       overflow-x:auto;
-      border-radius:3px;
+      border-radius:6px;
+    }
+    .sheet-wrap::before{
+      content:'↔ Deslize para o lado para ver a folha inteira';
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:10px;
+      text-align:center;
     }
 
     #sheet{ background:transparent; }
@@ -372,7 +376,8 @@
       position:relative;
       background:#fff;
       box-shadow:0 2px 10px rgba(32,36,31,0.12);
-      margin:0 auto 20px;
+      margin:0 auto 16px;
+      transform-origin: top left;
     }
 
     .label-cell{
@@ -398,7 +403,7 @@
       text-transform:uppercase;
       letter-spacing:1.2px;
       font-weight:600;
-      margin:20px 0 8px;
+      margin:16px 0 8px;
       text-align:center;
     }
     .page-marker:first-child{ margin-top:0; }
@@ -411,55 +416,80 @@
       letter-spacing:0.3px;
     }
 
-    /* ---------------- RESPONSIVO (CELULAR) ---------------- */
-    @media (max-width: 640px){
-      .app{ padding:28px 14px 90px; }
+    /* ---------------- BOTÃO DE INSTALAR (PWA) ---------------- */
+    #install-container {
+      display: none;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #install-btn {
+      background: var(--brass);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      width: 100%;
+      touch-action: manipulation;
+    }
+    #install-btn:active {
+      transform: scale(0.98);
+    }
 
-      header.title h1{ font-size:26px; }
-      header.title p{ font-size:13px; }
-
-      .panel{ padding:18px 16px 18px; }
-
-      .panel-head{
-        flex-wrap:wrap;
-        row-gap:10px;
-      }
-      .panel-head .lock-toggle, .lock-btn{
-        margin-left:0;
-      }
-      .panel-head h2{ font-size:15px; }
-
+    /* ---------------- RESPONSIVO ---------------- */
+    @media (max-width: 480px){
+      .app{ padding:16px 12px 80px; }
+      header.title h1{ font-size:24px; }
+      
+      .panel{ padding:14px 12px 14px; border-radius: 0; }
+      
       .grid-fields{
         grid-template-columns:1fr 1fr;
-        gap:12px;
+        gap:8px;
       }
-
-      .mode-toggle{ width:100%; }
-      .mode-toggle button{ flex:1; padding:10px 8px; }
-
-      .actions{ flex-direction:column; align-items:stretch; }
-      .actions button.primary{ width:100%; text-align:center; }
-      .count-badge{ margin-left:0; text-align:center; }
-
-      .sheet-wrap{ padding:14px; }
-      .sheet-wrap::before{
-        content:'↔ arraste para o lado para ver a folha inteira';
-        display:block;
-        font-size:11px;
-        color:var(--muted);
-        margin-bottom:10px;
-        text-align:center;
+      .grid-fields .field:last-child{
+        grid-column: span 2;
+      }
+      
+      .field input, .field select, .field textarea{
+        padding: 14px 10px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+      .field input[type="number"]{
+        padding-right: 40px;
+      }
+      
+      button.primary{
+        font-size: 17px;
+        padding: 16px;
       }
     }
 
-    @media (max-width: 400px){
+    @media (max-width: 380px){
       .grid-fields{ grid-template-columns:1fr; }
+      .grid-fields .field:last-child{ grid-column: span 1; }
+    }
+    
+    @media (min-width: 641px){
+      .sheet-wrap::before{ display: none; }
+      .actions{ flex-direction: row; }
+      button.primary{ width: auto; }
+      .count-badge{ margin-top: 0; }
     }
   </style>
 </head>
 <body>
 
 <div class="app">
+
+  <!-- BOTÃO PARA INSTALAR COMO APP NO CELULAR -->
+  <div id="install-container">
+    <button id="install-btn">📲 Instalar como App (Gerador de Etiquetas)</button>
+  </div>
 
   <header class="title">
     <div class="eyebrow">Gerador de etiquetas · folha A4</div>
@@ -520,10 +550,10 @@
       <div class="field">
         <label for="list-input">Uma etiqueta por linha</label>
         <textarea id="list-input" placeholder="BPP 014&#10;BPP 015&#10;BPP 024&#10;...">BPP 014
-        BPP 015
-        BPP 024
-        BPP 025
-        BPP 026</textarea>
+BPP 015
+BPP 024
+BPP 025
+BPP 026</textarea>
       </div>
     </div>
   </div>
@@ -535,31 +565,40 @@
       <h2>Layout da folha A4</h2>
     </div>
 
-    <!-- <div class="banner">
+    <div class="banner">
       📏 Apenas o tamanho do texto se ajusta automaticamente — ele encolhe até caber dentro da etiqueta, mantendo a leitura padronizada em toda a folha.
-    </div> -->
+    </div>
 
-    <div class="grid-fields">
+    <!-- NOVO BOTÃO DE TRAVAR AS DIMENSÕES -->
+    <div class="panel-head" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">
+      <h2 style="font-size:14px">Dimensões da etiqueta</h2>
+      <button type="button" class="lock-btn" id="dim-lock-btn" onclick="toggleDimLock()">🔒 Dimensões travadas</button>
+    </div>
+
+    <div class="grid-fields" style="margin-top: 16px;">
       <div class="field">
         <label for="cellw">Largura da etiqueta (cm)</label>
-        <input id="cellw" type="number" value="1.50" min="0.3" max="21" step="0.01">
+        <!-- ADICIONADO: class="dimension-field" e disabled -->
+        <input id="cellw" class="dimension-field" type="number" value="1.50" min="0.3" max="21" step="0.01" disabled>
       </div>
       <div class="field">
         <label for="cellh">Altura da etiqueta (cm)</label>
-        <input id="cellh" type="number" value="0.50" min="0.3" max="29" step="0.01">
+        <!-- ADICIONADO: class="dimension-field" e disabled -->
+        <input id="cellh" class="dimension-field" type="number" value="0.50" min="0.3" max="29" step="0.01" disabled>
       </div>
       <div class="field">
         <label for="gap">Espaço entre etiquetas (mm)</label>
-        <input id="gap" type="number" value="0" min="0" max="5" step="0.5">
+        <!-- ADICIONADO: class="dimension-field" e disabled -->
+        <input id="gap" class="dimension-field" type="number" value="0" min="0" max="5" step="0.5" disabled>
       </div>
     </div>
 
-    <div class="panel-head" style="margin-top:22px;border-top:1px solid var(--line-soft);padding-top:18px;">
+    <div class="panel-head" style="margin-top:16px;border-top:1px solid var(--line-soft);padding-top:16px;border-bottom:none; margin-bottom:0; padding-bottom:0;">
       <h2 style="font-size:14px">Margens da página</h2>
       <button type="button" class="lock-btn" id="lock-btn" onclick="toggleMarginLock()">🔒 Margens travadas</button>
     </div>
 
-    <div class="grid-fields">
+    <div class="grid-fields" style="margin-top:16px;">
       <div class="field">
         <label for="margin-top">Superior (cm)</label>
         <input id="margin-top" class="margin-field" type="number" value="0.508" min="0" max="10" step="0.001" disabled>
@@ -577,7 +616,7 @@
         <input id="margin-right" class="margin-field" type="number" value="0.381" min="0" max="10" step="0.001" disabled>
       </div>
     </div>
-    <!-- <p class="hint">As margens seguem o padrão da caixa "Configurar Página" do editor de etiquetas. Elas ficam travadas por padrão para evitar alterações acidentais — clique em "Margens travadas" para liberar a edição. Use as setas para ajustar para mais ou para menos.</p> -->
+    <p class="hint">As margens seguem o padrão da caixa "Configurar Página" do editor de etiquetas. Clique nos botões "Dimensões travadas" ou "Margens travadas" para liberar a edição.</p>
     <p class="hint" id="layout-info"></p>
   </div>
 
@@ -590,6 +629,7 @@
     <div class="actions">
       <button class="primary" onclick="renderSheet()">Atualizar pré-visualização</button>
       <button class="primary brass" onclick="gerarPDF()">⬇ Baixar PDF</button>
+      <!-- O contador agora mostra apenas o número puro -->
       <span class="count-badge" id="count-badge"></span>
     </div>
   </div>
@@ -605,13 +645,34 @@
     </div>
   </div>
 
-  <!-- <footer class="app-foot">Gerador de Etiquetas · medidas em milímetros, precisão de impressão</footer> -->
+  <footer class="app-foot">Gerador de Etiquetas · Desenvolvido por WfcTec Informática</footer>
 
 </div>
 
 <script>
   let currentMode = 'seq';
   let marginsLocked = true;
+  let dimsLocked = true; // NOVO: Estado das dimensões
+
+  // --- SCRIPT PARA INSTALAR COMO APP (PWA) ---
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('install-container').style.display = 'block';
+  });
+
+  document.getElementById('install-btn').addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        document.getElementById('install-container').style.display = 'none';
+      }
+      deferredPrompt = null;
+    }
+  });
+  // --- FIM DO SCRIPT DE INSTALAÇÃO ---
 
   function setMode(mode){
     currentMode = mode;
@@ -621,14 +682,29 @@
     document.getElementById('btn-mode-list').classList.toggle('active', mode === 'list');
   }
 
+  // --- NOVA FUNÇÃO PARA TRAVAR DIMENSÕES ---
+  function toggleDimLock(){
+    dimsLocked = !dimsLocked;
+    document.querySelectorAll('.dimension-field').forEach(el => { 
+      el.disabled = dimsLocked;
+    });
+    const btn = document.getElementById('dim-lock-btn');
+    if(dimsLocked){
+      btn.textContent = '🔒 Dimensões travadas';
+      btn.classList.remove('unlocked');
+    } else {
+      btn.textContent = '🔓 Dimensões liberadas — clique para travar';
+      btn.classList.add('unlocked');
+    }
+  }
+
   function toggleMarginLock(){
     marginsLocked = !marginsLocked;
     document.querySelectorAll('.margin-field').forEach(el => { 
       el.disabled = marginsLocked;
-      // Quando desbloqueado, permite ajustes para mais e para menos
       if(!marginsLocked){
         el.min = 0;
-        el.max = 100;
+        el.max = 10;
       }
     });
     const btn = document.getElementById('lock-btn');
@@ -641,7 +717,6 @@
     }
   }
 
-  // tamanho da etiqueta em mm, lido dos campos editáveis (cm -> mm)
   function getCellSize(){
     const w = parseFloat(document.getElementById('cellw').value) || 1.5;
     const h = parseFloat(document.getElementById('cellh').value) || 0.5;
@@ -671,7 +746,7 @@
   }
 
   function getLayout(){
-    const mTop = (parseFloat(document.getElementById('margin-top').value) || 0) * 10;    // cm -> mm
+    const mTop = (parseFloat(document.getElementById('margin-top').value) || 0) * 10;
     const mLeft = (parseFloat(document.getElementById('margin-left').value) || 0) * 10;
     const mBottom = (parseFloat(document.getElementById('margin-bottom').value) || 0) * 10;
     const mRight = (parseFloat(document.getElementById('margin-right').value) || 0) * 10;
@@ -683,19 +758,16 @@
     const cols = Math.max(1, Math.floor((usableW + gap) / (cellW + gap)));
     const rows = Math.max(1, Math.floor((usableH + gap) / (cellH + gap)));
 
-    // sem centralização automática: começa exatamente na margem definida,
-    // igual à referência de folha de etiquetas adesivas (Word/editor de etiquetas)
     const offsetX = mLeft;
     const offsetY = mTop;
 
     return { mTop, mLeft, mBottom, mRight, gap, cellW, cellH, cols, rows, offsetX, offsetY, perPage: cols * rows };
   }
 
-  // ---------- auto-ajuste de fonte (usado na pré-visualização, em px de tela) ----------
   function fitFontSizePx(texts, maxWidthPx, maxHeightPx){
     const canvas = fitFontSizePx._canvas || (fitFontSizePx._canvas = document.createElement('canvas'));
     const ctx = canvas.getContext('2d');
-    let size = maxHeightPx * 1.4; // chute inicial
+    let size = maxHeightPx * 1.4;
     const minSize = 4;
     while(size > minSize){
       ctx.font = '600 ' + size + 'px "IBM Plex Mono", monospace';
@@ -721,19 +793,18 @@
     sheet.innerHTML = '';
 
     if(codes.length === 0){
-      sheet.innerHTML = '<p style="color:#999;font-size:13px;">Nenhum código gerado. Confira os campos acima.</p>';
+      sheet.innerHTML = '<p style="color:#999;font-size:13px;text-align:center;">Nenhum código gerado. Confira os campos acima.</p>';
       document.getElementById('count-badge').textContent = '';
       document.getElementById('layout-info').textContent = '';
       return;
     }
 
     const layout = getLayout();
+    
     document.getElementById('layout-info').textContent =
       layout.cols + ' colunas × ' + layout.rows + ' linhas por página A4 = ' + layout.perPage + ' etiquetas por folha.';
 
     const totalPages = Math.ceil(codes.length / layout.perPage);
-
-    // px por mm na tela, escala de 96dpi / 25.4mm
     const PXPMM = 96 / 25.4;
     const fontPx = fitFontSizePx(codes, (layout.cellW - 1) * PXPMM, (layout.cellH - 0.6) * PXPMM);
 
@@ -768,11 +839,9 @@
       sheet.appendChild(page);
     }
 
-    document.getElementById('count-badge').textContent =
-      codes.length + ' etiqueta(s) · ' + totalPages + ' página(s) A4';
+    document.getElementById('count-badge').textContent = codes.length;
   }
 
-  // ---------- auto-ajuste de fonte para o PDF (em pt, unidade jsPDF = mm) ----------
   function fitFontSizePDF(doc, texts, maxWidthMM, maxHeightMM){
     let size = 14;
     const minSize = 3;
