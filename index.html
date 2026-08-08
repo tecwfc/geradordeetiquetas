@@ -1,416 +1,461 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#2B4A3C">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Etiquetas">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3C/text%3E%3C/svg%3E">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3C/text%3E%3C/svg%3E">
-<title>Atelier de Etiquetas</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-  :root{
-    --paper:#F4F5F1;
-    --paper-card:#FFFFFF;
-    --ink:#20241F;
-    --ink-soft:#4B5049;
-    --muted:#8B8E82;
-    --line:#DEDDD1;
-    --line-soft:#EAE9DE;
-    --forest:#2B4A3C;
-    --forest-deep:#1D3329;
-    --brass:#A98247;
-    --brass-soft:#E7DAC1;
-    --brass-deep:#7C5E32;
-    --danger:#9C4A3C;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2B4A3C">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gerador de Etiquetas">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3C/text%3E%3C/svg%3E">
+  <title>Gerador de Etiquetas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root{
+      --paper:#F4F5F1;
+      --paper-card:#FFFFFF;
+      --ink:#20241F;
+      --ink-soft:#4B5049;
+      --muted:#8B8E82;
+      --line:#DEDDD1;
+      --line-soft:#EAE9DE;
+      --forest:#2B4A3C;
+      --forest-deep:#1D3329;
+      --brass:#A98247;
+      --brass-soft:#E7DAC1;
+      --brass-deep:#7C5E32;
+      --danger:#9C4A3C;
+    }
 
-  *{ box-sizing:border-box; }
+    *{ box-sizing:border-box; }
 
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Public Sans', ui-sans-serif, sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
+    body{
+      margin:0;
+      background:var(--paper);
+      color:var(--ink);
+      font-family:'Public Sans', ui-sans-serif, sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
 
-  .app{
-    max-width:1080px;
-    margin:0 auto;
-    padding:48px 24px 100px;
-  }
+    .app{
+      max-width:1080px;
+      margin:0 auto;
+      padding:48px 24px 100px;
+    }
 
-  /* ---------------- CABEÇALHO ---------------- */
-  header.title{
-    margin-bottom:36px;
-  }
+    /* ---------------- CABEÇALHO ---------------- */
+    header.title{
+      margin-bottom:36px;
+    }
 
-  .eyebrow{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:11px;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    color:var(--brass-deep);
-    font-weight:600;
-    margin-bottom:10px;
-  }
-  .eyebrow::before{
-    content:'';
-    width:22px;
-    height:1px;
-    background:var(--brass-deep);
-    display:inline-block;
-  }
+    .eyebrow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:11px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--brass-deep);
+      font-weight:600;
+      margin-bottom:10px;
+    }
+    .eyebrow::before{
+      content:'';
+      width:22px;
+      height:1px;
+      background:var(--brass-deep);
+      display:inline-block;
+    }
 
-  header.title h1{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    font-size:34px;
-    letter-spacing:-0.01em;
-    margin:0 0 8px;
-    color:var(--ink);
-  }
-  header.title p{
-    margin:0;
-    font-size:14px;
-    color:var(--ink-soft);
-    max-width:520px;
-    line-height:1.5;
-  }
+    header.title h1{
+      font-family:'Fraunces', serif;
+      font-weight:500;
+      font-size:34px;
+      letter-spacing:-0.01em;
+      margin:0 0 8px;
+      color:var(--ink);
+    }
+    header.title p{
+      margin:0;
+      font-size:14px;
+      color:var(--ink-soft);
+      max-width:520px;
+      line-height:1.5;
+    }
 
-  /* réguazinha decorativa — remete às medidas de precisão do gerador */
-  .ruler{
-    display:flex;
-    align-items:flex-end;
-    height:14px;
-    margin-top:18px;
-    gap:0;
-  }
-  .ruler i{
-    flex:1;
-    height:5px;
-    border-left:1px solid var(--line);
-  }
-  .ruler i:nth-child(5n+1){ height:10px; border-left-color:var(--brass); }
+    /* réguazinha decorativa — remete às medidas de precisão do gerador */
+    .ruler{
+      display:flex;
+      align-items:flex-end;
+      height:14px;
+      margin-top:18px;
+      gap:0;
+    }
+    .ruler i{
+      flex:1;
+      height:5px;
+      border-left:1px solid var(--line);
+    }
+    .ruler i:nth-child(5n+1){ height:10px; border-left-color:var(--brass); }
 
-  /* ---------------- CARDS ---------------- */
-  .panel{
-    background:var(--paper-card);
-    border:1px solid var(--line);
-    border-top:2px solid var(--forest);
-    padding:26px 26px 24px;
-    margin-bottom:22px;
-    box-shadow:0 1px 2px rgba(32,36,31,0.03);
-  }
-
-  .panel-head{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:20px;
-    padding-bottom:14px;
-    border-bottom:1px solid var(--line-soft);
-  }
-
-  .step-badge{
-    width:26px;
-    height:26px;
-    flex:none;
-    border-radius:50%;
-    background:var(--forest);
-    color:#fff;
-    font-family:'Fraunces', serif;
-    font-size:13px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  .panel-head h2{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    font-size:16px;
-    letter-spacing:0.01em;
-    margin:0;
-    color:var(--ink);
-  }
-
-  .panel-head .lock-toggle{
-    margin-left:auto;
-  }
-
-  .grid-fields{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
-    gap:16px;
-  }
-
-  .field label{
-    display:block;
-    font-size:10.5px;
-    text-transform:uppercase;
-    letter-spacing:0.7px;
-    color:var(--muted);
-    font-weight:600;
-    margin-bottom:6px;
-  }
-
-  .field input, .field select, .field textarea{
-    width:100%;
-    padding:9px 10px;
-    border:1px solid var(--line);
-    background:#fff;
-    font-family:'IBM Plex Mono', ui-monospace, monospace;
-    font-size:13px;
-    font-weight:500;
-    color:var(--ink);
-    border-radius:3px;
-    transition:border-color .15s ease, background .15s ease;
-  }
-  .field input:focus, .field select:focus, .field textarea:focus{
-    outline:none;
-    border-color:var(--forest);
-    box-shadow:0 0 0 3px rgba(43,74,60,0.12);
-  }
-  .field select{
-    font-family:'Public Sans', sans-serif;
-  }
-
-  .field input:disabled{
-    background:var(--line-soft);
-    color:var(--muted);
-    border-color:var(--line-soft);
-    cursor:not-allowed;
-  }
-
-  /* ---------------- MODOS / TOGGLES ---------------- */
-  .mode-toggle{
-    display:inline-flex;
-    border:1px solid var(--forest);
-    border-radius:3px;
-    overflow:hidden;
-    margin-bottom:20px;
-  }
-  .mode-toggle button{
-    padding:9px 18px;
-    border:none;
-    background:#fff;
-    color:var(--forest);
-    font-family:'Public Sans', sans-serif;
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:0.3px;
-    cursor:pointer;
-    transition:background .15s ease, color .15s ease;
-  }
-  .mode-toggle button + button{ border-left:1px solid var(--forest); }
-  .mode-toggle button.active{
-    background:var(--forest);
-    color:#fff;
-  }
-
-  .lock-btn{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    background:var(--brass-soft);
-    color:var(--brass-deep);
-    border:1px solid var(--brass);
-    border-radius:20px;
-    padding:6px 14px;
-    font-family:'Public Sans', sans-serif;
-    font-size:11.5px;
-    font-weight:600;
-    letter-spacing:0.3px;
-    cursor:pointer;
-    margin-left:auto;
-    transition:background .15s ease;
-  }
-  .lock-btn:hover{ background:#dfcda3; }
-  .lock-btn.unlocked{
-    background:var(--forest);
-    color:#fff;
-    border-color:var(--forest);
-  }
-  .lock-btn.unlocked:hover{ background:var(--forest-deep); }
-
-  textarea{
-    min-height:92px;
-    resize:vertical;
-  }
-
-  .hint{
-    font-size:12px;
-    color:var(--muted);
-    margin-top:12px;
-    line-height:1.5;
-  }
-
-  .banner{
-    display:flex;
-    align-items:flex-start;
-    gap:10px;
-    background:var(--line-soft);
-    border:1px solid var(--line);
-    border-radius:3px;
-    padding:12px 14px;
-    margin-bottom:18px;
-    font-size:12.5px;
-    color:var(--ink-soft);
-    line-height:1.5;
-  }
-  .banner b{ color:var(--forest); }
-
-  /* ---------------- AÇÕES ---------------- */
-  .actions{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    align-items:center;
-  }
-
-  button.primary{
-    background:var(--forest);
-    color:#fff;
-    border:none;
-    padding:13px 26px;
-    font-family:'Public Sans', sans-serif;
-    font-size:13px;
-    font-weight:600;
-    letter-spacing:0.3px;
-    border-radius:3px;
-    cursor:pointer;
-    transition:background .15s ease, transform .1s ease;
-  }
-  button.primary:hover{ background:var(--forest-deep); }
-  button.primary:active{ transform:translateY(1px); }
-
-  button.primary.brass{
-    background:var(--brass);
-  }
-  button.primary.brass:hover{ background:var(--brass-deep); }
-
-  .count-badge{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px;
-    color:var(--ink-soft);
-    margin-left:auto;
-    background:var(--line-soft);
-    padding:8px 14px;
-    border-radius:20px;
-  }
-
-  /* ---------------- ÁREA DE VISUALIZAÇÃO ---------------- */
-  .sheet-wrap{
-    background:#EFEFE9;
-    border:1px solid var(--line);
-    padding:28px;
-    overflow-x:auto;
-    border-radius:3px;
-  }
-
-  #sheet{ background:transparent; }
-
-  .a4-page{
-    width:210mm;
-    height:297mm;
-    position:relative;
-    background:#fff;
-    box-shadow:0 2px 10px rgba(32,36,31,0.12);
-    margin:0 auto 20px;
-  }
-
-  .label-cell{
-    position:absolute;
-    border:1px solid var(--ink);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    font-family:'IBM Plex Mono', monospace;
-    font-weight:600;
-    overflow:hidden;
-    white-space:pre-line;
-    line-height:1.05;
-    background:#fff;
-    color:var(--ink);
-  }
-
-  .page-marker{
-    font-family:'Public Sans', sans-serif;
-    font-size:10.5px;
-    color:var(--muted);
-    text-transform:uppercase;
-    letter-spacing:1.2px;
-    font-weight:600;
-    margin:20px 0 8px;
-    text-align:center;
-  }
-  .page-marker:first-child{ margin-top:0; }
-
-  footer.app-foot{
-    text-align:center;
-    font-size:11px;
-    color:var(--muted);
-    margin-top:36px;
-    letter-spacing:0.3px;
-  }
-
-  /* ---------------- RESPONSIVO (CELULAR) ---------------- */
-  @media (max-width: 640px){
-    .app{ padding:28px 14px 90px; }
-
-    header.title h1{ font-size:26px; }
-    header.title p{ font-size:13px; }
-
-    .panel{ padding:18px 16px 18px; }
+    /* ---------------- CARDS ---------------- */
+    .panel{
+      background:var(--paper-card);
+      border:1px solid var(--line);
+      border-top:2px solid var(--forest);
+      padding:26px 26px 24px;
+      margin-bottom:22px;
+      box-shadow:0 1px 2px rgba(32,36,31,0.03);
+    }
 
     .panel-head{
-      flex-wrap:wrap;
-      row-gap:10px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:20px;
+      padding-bottom:14px;
+      border-bottom:1px solid var(--line-soft);
     }
-    .panel-head .lock-toggle, .lock-btn{
-      margin-left:0;
+
+    .step-badge{
+      width:26px;
+      height:26px;
+      flex:none;
+      border-radius:50%;
+      background:var(--forest);
+      color:#fff;
+      font-family:'Fraunces', serif;
+      font-size:13px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
-    .panel-head h2{ font-size:15px; }
+
+    .panel-head h2{
+      font-family:'Fraunces', serif;
+      font-weight:500;
+      font-size:16px;
+      letter-spacing:0.01em;
+      margin:0;
+      color:var(--ink);
+    }
+
+    .panel-head .lock-toggle{
+      margin-left:auto;
+    }
 
     .grid-fields{
-      grid-template-columns:1fr 1fr;
-      gap:12px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
+      gap:16px;
     }
 
-    .mode-toggle{ width:100%; }
-    .mode-toggle button{ flex:1; padding:10px 8px; }
+    .field{
+      position:relative;
+    }
 
-    .actions{ flex-direction:column; align-items:stretch; }
-    .actions button.primary{ width:100%; text-align:center; }
-    .count-badge{ margin-left:0; text-align:center; }
-
-    .sheet-wrap{ padding:14px; }
-    .sheet-wrap::before{
-      content:'↔ arraste para o lado para ver a folha inteira';
+    .field label{
       display:block;
-      font-size:11px;
+      font-size:10.5px;
+      text-transform:uppercase;
+      letter-spacing:0.7px;
       color:var(--muted);
-      margin-bottom:10px;
+      font-weight:600;
+      margin-bottom:6px;
+    }
+
+    /* ========================================================== */
+    /* AQUI COMEÇAM AS ALTERAÇÕES PARA DEIXAR IGUAL À IMAGEM      */
+    /* ========================================================== */
+    .field input, .field select, .field textarea{
+      width:100%;
+      padding:9px 10px;
+      
+      /* COR DA BORDA E FUNDO IGUAL À IMAGEM */
+      border: 2px solid #2d4f40; /* Borda verde escura e mais grossa */
+      background: #ffffff;       /* Fundo branco puro */
+      
+      font-family:'IBM Plex Mono', ui-monospace, monospace;
+      font-size:13px;
+      font-weight:500;
+      color:var(--ink);
+      
+      /* CANTOS ARREDONDADOS */
+      border-radius: 6px; 
+      
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    
+    .field input:focus, .field select:focus, .field textarea:focus{
+      outline:none;
+      border-color: #1e362b; /* Cor um pouco mais escura no foco */
+      box-shadow: 0 0 0 3px rgba(45, 79, 64, 0.2);
+    }
+    
+    .field select{
+      font-family:'Public Sans', sans-serif;
+    }
+
+    .field input:disabled{
+      background:var(--line-soft);
+      color:var(--muted);
+      border-color:var(--line-soft);
+      cursor:not-allowed;
+    }
+
+    /* Estilo das SETINHAS (botões de aumentar/diminuir) */
+    .field input[type="number"]{
+      /* Garante espaço à direita para a seta não cobrir o texto */
+      padding-right: 30px;
+    }
+    
+    /* No Firefox, exibe as setas nativas */
+    .field input[type="number"]{
+      -moz-appearance: textfield; /* Limpa pra gente configurar */
+    }
+    .field input[type="number"]:not(:disabled){
+      -moz-appearance: spinbutton;
+    }
+
+    /* No Chrome/Edge/Safari, garante que as setas apareçam nativas */
+    .field input[type="number"]:not(:disabled)::-webkit-inner-spin-button,
+    .field input[type="number"]:not(:disabled)::-webkit-outer-spin-button {
+      -webkit-appearance: inner-spin-button;
+      opacity: 1;
+      height: 80%;       /* Ajuste fino do tamanho da seta */
+      position: absolute;
+      right: 4px;        /* Recuo lateral */
+      top: 10%;
+      bottom: 10%;
+      margin: auto;
+    }
+    /* ========================================================== */
+    /* FIM DAS ALTERAÇÕES                                         */
+    /* ========================================================== */
+
+    /* ---------------- MODOS / TOGGLES ---------------- */
+    .mode-toggle{
+      display:inline-flex;
+      border:1px solid var(--forest);
+      border-radius:3px;
+      overflow:hidden;
+      margin-bottom:20px;
+    }
+    .mode-toggle button{
+      padding:9px 18px;
+      border:none;
+      background:#fff;
+      color:var(--forest);
+      font-family:'Public Sans', sans-serif;
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:0.3px;
+      cursor:pointer;
+      transition:background .15s ease, color .15s ease;
+    }
+    .mode-toggle button + button{ border-left:1px solid var(--forest); }
+    .mode-toggle button.active{
+      background:var(--forest);
+      color:#fff;
+    }
+
+    .lock-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:var(--brass-soft);
+      color:var(--brass-deep);
+      border:1px solid var(--brass);
+      border-radius:20px;
+      padding:6px 14px;
+      font-family:'Public Sans', sans-serif;
+      font-size:11.5px;
+      font-weight:600;
+      letter-spacing:0.3px;
+      cursor:pointer;
+      margin-left:auto;
+      transition:background .15s ease;
+    }
+    .lock-btn:hover{ background:#dfcda3; }
+    .lock-btn.unlocked{
+      background:var(--forest);
+      color:#fff;
+      border-color:var(--forest);
+    }
+    .lock-btn.unlocked:hover{ background:var(--forest-deep); }
+
+    textarea{
+      min-height:92px;
+      resize:vertical;
+    }
+
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:12px;
+      line-height:1.5;
+    }
+
+    .banner{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      background:var(--line-soft);
+      border:1px solid var(--line);
+      border-radius:3px;
+      padding:12px 14px;
+      margin-bottom:18px;
+      font-size:12.5px;
+      color:var(--ink-soft);
+      line-height:1.5;
+    }
+    .banner b{ color:var(--forest); }
+
+    /* ---------------- AÇÕES ---------------- */
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    button.primary{
+      background:var(--forest);
+      color:#fff;
+      border:none;
+      padding:13px 26px;
+      font-family:'Public Sans', sans-serif;
+      font-size:13px;
+      font-weight:600;
+      letter-spacing:0.3px;
+      border-radius:3px;
+      cursor:pointer;
+      transition:background .15s ease, transform .1s ease;
+    }
+    button.primary:hover{ background:var(--forest-deep); }
+    button.primary:active{ transform:translateY(1px); }
+
+    button.primary.brass{
+      background:var(--brass);
+    }
+    button.primary.brass:hover{ background:var(--brass-deep); }
+
+    .count-badge{
+      font-family:'IBM Plex Mono', monospace;
+      font-size:12px;
+      color:var(--ink-soft);
+      margin-left:auto;
+      background:var(--line-soft);
+      padding:8px 14px;
+      border-radius:20px;
+    }
+
+    /* ---------------- ÁREA DE VISUALIZAÇÃO ---------------- */
+    .sheet-wrap{
+      background:#EFEFE9;
+      border:1px solid var(--line);
+      padding:28px;
+      overflow-x:auto;
+      border-radius:3px;
+    }
+
+    #sheet{ background:transparent; }
+
+    .a4-page{
+      width:210mm;
+      height:297mm;
+      position:relative;
+      background:#fff;
+      box-shadow:0 2px 10px rgba(32,36,31,0.12);
+      margin:0 auto 20px;
+    }
+
+    .label-cell{
+      position:absolute;
+      border:1px solid var(--ink);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-family:'IBM Plex Mono', monospace;
+      font-weight:600;
+      overflow:hidden;
+      white-space:pre-line;
+      line-height:1.05;
+      background:#fff;
+      color:var(--ink);
+    }
+
+    .page-marker{
+      font-family:'Public Sans', sans-serif;
+      font-size:10.5px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:1.2px;
+      font-weight:600;
+      margin:20px 0 8px;
       text-align:center;
     }
-  }
+    .page-marker:first-child{ margin-top:0; }
 
-  @media (max-width: 400px){
-    .grid-fields{ grid-template-columns:1fr; }
-  }
-</style>
+    footer.app-foot{
+      text-align:center;
+      font-size:11px;
+      color:var(--muted);
+      margin-top:36px;
+      letter-spacing:0.3px;
+    }
+
+    /* ---------------- RESPONSIVO (CELULAR) ---------------- */
+    @media (max-width: 640px){
+      .app{ padding:28px 14px 90px; }
+
+      header.title h1{ font-size:26px; }
+      header.title p{ font-size:13px; }
+
+      .panel{ padding:18px 16px 18px; }
+
+      .panel-head{
+        flex-wrap:wrap;
+        row-gap:10px;
+      }
+      .panel-head .lock-toggle, .lock-btn{
+        margin-left:0;
+      }
+      .panel-head h2{ font-size:15px; }
+
+      .grid-fields{
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+      }
+
+      .mode-toggle{ width:100%; }
+      .mode-toggle button{ flex:1; padding:10px 8px; }
+
+      .actions{ flex-direction:column; align-items:stretch; }
+      .actions button.primary{ width:100%; text-align:center; }
+      .count-badge{ margin-left:0; text-align:center; }
+
+      .sheet-wrap{ padding:14px; }
+      .sheet-wrap::before{
+        content:'↔ arraste para o lado para ver a folha inteira';
+        display:block;
+        font-size:11px;
+        color:var(--muted);
+        margin-bottom:10px;
+        text-align:center;
+      }
+    }
+
+    @media (max-width: 400px){
+      .grid-fields{ grid-template-columns:1fr; }
+    }
+  </style>
 </head>
 <body>
 
@@ -418,14 +463,14 @@
 
   <header class="title">
     <div class="eyebrow">Gerador de etiquetas · folha A4</div>
-    <h1>Atelier de Etiquetas</h1>
-    <p>Monte sequências de códigos, ajuste medidas com precisão de milímetro e exporte a folha pronta para impressão.</p>
-    <div class="ruler" aria-hidden="true">
+    <h1>Gerador de Etiquetas</h1>
+    <!-- <p>Monte sequências de códigos, ajuste medidas com precisão de milímetro e exporte a folha pronta para impressão.</p> -->
+    <!-- <div class="ruler" aria-hidden="true">
       <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
       <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
       <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
       <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-    </div>
+    </div> -->
   </header>
 
   <!-- ORIGEM DOS CÓDIGOS -->
@@ -475,10 +520,10 @@
       <div class="field">
         <label for="list-input">Uma etiqueta por linha</label>
         <textarea id="list-input" placeholder="BPP 014&#10;BPP 015&#10;BPP 024&#10;...">BPP 014
-BPP 015
-BPP 024
-BPP 025
-BPP 026</textarea>
+        BPP 015
+        BPP 024
+        BPP 025
+        BPP 026</textarea>
       </div>
     </div>
   </div>
@@ -490,9 +535,9 @@ BPP 026</textarea>
       <h2>Layout da folha A4</h2>
     </div>
 
-    <div class="banner">
+    <!-- <div class="banner">
       📏 Apenas o tamanho do texto se ajusta automaticamente — ele encolhe até caber dentro da etiqueta, mantendo a leitura padronizada em toda a folha.
-    </div>
+    </div> -->
 
     <div class="grid-fields">
       <div class="field">
@@ -517,22 +562,22 @@ BPP 026</textarea>
     <div class="grid-fields">
       <div class="field">
         <label for="margin-top">Superior (cm)</label>
-        <input id="margin-top" class="margin-field" type="number" value="0.508" min="0" max="5" step="0.001" disabled>
+        <input id="margin-top" class="margin-field" type="number" value="0.508" min="0" max="10" step="0.001" disabled>
       </div>
       <div class="field">
         <label for="margin-left">Esquerda (cm)</label>
-        <input id="margin-left" class="margin-field" type="number" value="0.381" min="0" max="5" step="0.001" disabled>
+        <input id="margin-left" class="margin-field" type="number" value="0.381" min="0" max="10" step="0.001" disabled>
       </div>
       <div class="field">
         <label for="margin-bottom">Inferior (cm)</label>
-        <input id="margin-bottom" class="margin-field" type="number" value="0.635" min="0" max="5" step="0.001" disabled>
+        <input id="margin-bottom" class="margin-field" type="number" value="0.635" min="0" max="10" step="0.001" disabled>
       </div>
       <div class="field">
         <label for="margin-right">Direita (cm)</label>
-        <input id="margin-right" class="margin-field" type="number" value="0.381" min="0" max="5" step="0.001" disabled>
+        <input id="margin-right" class="margin-field" type="number" value="0.381" min="0" max="10" step="0.001" disabled>
       </div>
     </div>
-    <p class="hint">As margens seguem o padrão da caixa "Configurar Página" do editor de etiquetas. Elas ficam travadas por padrão para evitar alterações acidentais — clique em "Margens travadas" para liberar a edição.</p>
+    <!-- <p class="hint">As margens seguem o padrão da caixa "Configurar Página" do editor de etiquetas. Elas ficam travadas por padrão para evitar alterações acidentais — clique em "Margens travadas" para liberar a edição. Use as setas para ajustar para mais ou para menos.</p> -->
     <p class="hint" id="layout-info"></p>
   </div>
 
@@ -560,245 +605,252 @@ BPP 026</textarea>
     </div>
   </div>
 
-  <footer class="app-foot">Atelier de Etiquetas · medidas em milímetros, precisão de impressão</footer>
+  <!-- <footer class="app-foot">Gerador de Etiquetas · medidas em milímetros, precisão de impressão</footer> -->
 
 </div>
 
 <script>
-let currentMode = 'seq';
-let marginsLocked = true;
+  let currentMode = 'seq';
+  let marginsLocked = true;
 
-function setMode(mode){
-  currentMode = mode;
-  document.getElementById('mode-seq').style.display = mode === 'seq' ? 'block' : 'none';
-  document.getElementById('mode-list').style.display = mode === 'list' ? 'block' : 'none';
-  document.getElementById('btn-mode-seq').classList.toggle('active', mode === 'seq');
-  document.getElementById('btn-mode-list').classList.toggle('active', mode === 'list');
-}
-
-function toggleMarginLock(){
-  marginsLocked = !marginsLocked;
-  document.querySelectorAll('.margin-field').forEach(el => { el.disabled = marginsLocked; });
-  const btn = document.getElementById('lock-btn');
-  if(marginsLocked){
-    btn.textContent = '🔒 Margens travadas';
-    btn.classList.remove('unlocked');
-  } else {
-    btn.textContent = '🔓 Margens liberadas — clique para travar';
-    btn.classList.add('unlocked');
+  function setMode(mode){
+    currentMode = mode;
+    document.getElementById('mode-seq').style.display = mode === 'seq' ? 'block' : 'none';
+    document.getElementById('mode-list').style.display = mode === 'list' ? 'block' : 'none';
+    document.getElementById('btn-mode-seq').classList.toggle('active', mode === 'seq');
+    document.getElementById('btn-mode-list').classList.toggle('active', mode === 'list');
   }
-}
 
-// tamanho da etiqueta em mm, lido dos campos editáveis (cm -> mm)
-function getCellSize(){
-  const w = parseFloat(document.getElementById('cellw').value) || 1.5;
-  const h = parseFloat(document.getElementById('cellh').value) || 0.5;
-  return { w: w * 10, h: h * 10 };
-}
-
-const A4_W_MM = 210;
-const A4_H_MM = 297;
-
-function buildCodes(){
-  if(currentMode === 'seq'){
-    const prefix = document.getElementById('prefix').value.trim();
-    const start = parseInt(document.getElementById('start').value, 10);
-    const end = parseInt(document.getElementById('end').value, 10);
-    const digits = parseInt(document.getElementById('digits').value, 10);
-    const sep = document.getElementById('separator').value;
-    const codes = [];
-    if(isNaN(start) || isNaN(end) || end < start) return codes;
-    for(let i = start; i <= end; i++){
-      codes.push(prefix + sep + String(i).padStart(digits, '0'));
-    }
-    return codes;
-  } else {
-    const raw = document.getElementById('list-input').value;
-    return raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
-  }
-}
-
-function getLayout(){
-  const mTop = (parseFloat(document.getElementById('margin-top').value) || 0) * 10;    // cm -> mm
-  const mLeft = (parseFloat(document.getElementById('margin-left').value) || 0) * 10;
-  const mBottom = (parseFloat(document.getElementById('margin-bottom').value) || 0) * 10;
-  const mRight = (parseFloat(document.getElementById('margin-right').value) || 0) * 10;
-  const gap = parseFloat(document.getElementById('gap').value) || 0;
-  const { w: cellW, h: cellH } = getCellSize();
-
-  const usableW = A4_W_MM - mLeft - mRight;
-  const usableH = A4_H_MM - mTop - mBottom;
-  const cols = Math.max(1, Math.floor((usableW + gap) / (cellW + gap)));
-  const rows = Math.max(1, Math.floor((usableH + gap) / (cellH + gap)));
-
-  // sem centralização automática: começa exatamente na margem definida,
-  // igual à referência de folha de etiquetas adesivas (Word/editor de etiquetas)
-  const offsetX = mLeft;
-  const offsetY = mTop;
-
-  return { mTop, mLeft, mBottom, mRight, gap, cellW, cellH, cols, rows, offsetX, offsetY, perPage: cols * rows };
-}
-
-// ---------- auto-ajuste de fonte (usado na pré-visualização, em px de tela) ----------
-function fitFontSizePx(texts, maxWidthPx, maxHeightPx){
-  const canvas = fitFontSizePx._canvas || (fitFontSizePx._canvas = document.createElement('canvas'));
-  const ctx = canvas.getContext('2d');
-  let size = maxHeightPx * 1.4; // chute inicial
-  const minSize = 4;
-  while(size > minSize){
-    ctx.font = '600 ' + size + 'px "IBM Plex Mono", monospace';
-    let maxW = 0;
-    for(const t of texts){
-      const lines = t.split('\n');
-      for(const line of lines){
-        const w = ctx.measureText(line).width;
-        if(w > maxW) maxW = w;
+  function toggleMarginLock(){
+    marginsLocked = !marginsLocked;
+    document.querySelectorAll('.margin-field').forEach(el => { 
+      el.disabled = marginsLocked;
+      // Quando desbloqueado, permite ajustes para mais e para menos
+      if(!marginsLocked){
+        el.min = 0;
+        el.max = 100;
       }
-      const lineCount = lines.length;
-      if(size * 1.1 * lineCount > maxHeightPx){ maxW = Infinity; }
-    }
-    if(maxW <= maxWidthPx) return size;
-    size -= 0.5;
-  }
-  return minSize;
-}
-
-function renderSheet(){
-  const codes = buildCodes();
-  const sheet = document.getElementById('sheet');
-  sheet.innerHTML = '';
-
-  if(codes.length === 0){
-    sheet.innerHTML = '<p style="color:#999;font-size:13px;">Nenhum código gerado. Confira os campos acima.</p>';
-    document.getElementById('count-badge').textContent = '';
-    document.getElementById('layout-info').textContent = '';
-    return;
-  }
-
-  const layout = getLayout();
-  document.getElementById('layout-info').textContent =
-    layout.cols + ' colunas × ' + layout.rows + ' linhas por página A4 = ' + layout.perPage + ' etiquetas por folha.';
-
-  const totalPages = Math.ceil(codes.length / layout.perPage);
-
-  // px por mm na tela, escala de 96dpi / 25.4mm
-  const PXPMM = 96 / 25.4;
-  const fontPx = fitFontSizePx(codes, (layout.cellW - 1) * PXPMM, (layout.cellH - 0.6) * PXPMM);
-
-  for(let p = 0; p < totalPages; p++){
-    const marker = document.createElement('div');
-    marker.className = 'page-marker';
-    marker.textContent = 'Página ' + (p + 1) + ' de ' + totalPages;
-    sheet.appendChild(marker);
-
-    const page = document.createElement('div');
-    page.className = 'a4-page';
-
-    const pageCodes = codes.slice(p * layout.perPage, (p + 1) * layout.perPage);
-
-    pageCodes.forEach((code, i) => {
-      const col = i % layout.cols;
-      const row = Math.floor(i / layout.cols);
-      const x = layout.offsetX + col * (layout.cellW + layout.gap);
-      const y = layout.offsetY + row * (layout.cellH + layout.gap);
-
-      const cell = document.createElement('div');
-      cell.className = 'label-cell';
-      cell.style.left = x + 'mm';
-      cell.style.top = y + 'mm';
-      cell.style.width = layout.cellW + 'mm';
-      cell.style.height = layout.cellH + 'mm';
-      cell.style.fontSize = fontPx + 'px';
-      cell.textContent = code;
-      page.appendChild(cell);
     });
-
-    sheet.appendChild(page);
-  }
-
-  document.getElementById('count-badge').textContent =
-    codes.length + ' etiqueta(s) · ' + totalPages + ' página(s) A4';
-}
-
-// ---------- auto-ajuste de fonte para o PDF (em pt, unidade jsPDF = mm) ----------
-function fitFontSizePDF(doc, texts, maxWidthMM, maxHeightMM){
-  let size = 14;
-  const minSize = 3;
-  while(size > minSize){
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(size);
-    let maxW = 0;
-    let fits = true;
-    for(const t of texts){
-      const lines = t.split('\n');
-      const lineHeightMM = size * 0.3528 * 1.15;
-      if(lines.length * lineHeightMM > maxHeightMM){ fits = false; break; }
-      for(const line of lines){
-        const w = doc.getTextWidth(line);
-        if(w > maxW) maxW = w;
-      }
+    const btn = document.getElementById('lock-btn');
+    if(marginsLocked){
+      btn.textContent = '🔒 Margens travadas';
+      btn.classList.remove('unlocked');
+    } else {
+      btn.textContent = '🔓 Margens liberadas — clique para travar';
+      btn.classList.add('unlocked');
     }
-    if(fits && maxW <= maxWidthMM) return size;
-    size -= 0.25;
-  }
-  return minSize;
-}
-
-function gerarPDF(){
-  const codes = buildCodes();
-  if(codes.length === 0){
-    alert('Nenhum código gerado. Confira os campos de origem dos códigos.');
-    return;
-  }
-  if(!window.jspdf){
-    alert('A biblioteca de geração de PDF ainda não carregou. Verifique sua conexão e tente novamente.');
-    return;
   }
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  const layout = getLayout();
+  // tamanho da etiqueta em mm, lido dos campos editáveis (cm -> mm)
+  function getCellSize(){
+    const w = parseFloat(document.getElementById('cellw').value) || 1.5;
+    const h = parseFloat(document.getElementById('cellh').value) || 0.5;
+    return { w: w * 10, h: h * 10 };
+  }
 
-  const fontSize = fitFontSizePDF(doc, codes, layout.cellW - 1, layout.cellH - 0.6);
+  const A4_W_MM = 210;
+  const A4_H_MM = 297;
 
-  const totalPages = Math.ceil(codes.length / layout.perPage);
+  function buildCodes(){
+    if(currentMode === 'seq'){
+      const prefix = document.getElementById('prefix').value.trim();
+      const start = parseInt(document.getElementById('start').value, 10);
+      const end = parseInt(document.getElementById('end').value, 10);
+      const digits = parseInt(document.getElementById('digits').value, 10);
+      const sep = document.getElementById('separator').value;
+      const codes = [];
+      if(isNaN(start) || isNaN(end) || end < start) return codes;
+      for(let i = start; i <= end; i++){
+        codes.push(prefix + sep + String(i).padStart(digits, '0'));
+      }
+      return codes;
+    } else {
+      const raw = document.getElementById('list-input').value;
+      return raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+    }
+  }
 
-  for(let p = 0; p < totalPages; p++){
-    if(p > 0) doc.addPage();
+  function getLayout(){
+    const mTop = (parseFloat(document.getElementById('margin-top').value) || 0) * 10;    // cm -> mm
+    const mLeft = (parseFloat(document.getElementById('margin-left').value) || 0) * 10;
+    const mBottom = (parseFloat(document.getElementById('margin-bottom').value) || 0) * 10;
+    const mRight = (parseFloat(document.getElementById('margin-right').value) || 0) * 10;
+    const gap = parseFloat(document.getElementById('gap').value) || 0;
+    const { w: cellW, h: cellH } = getCellSize();
 
-    const pageCodes = codes.slice(p * layout.perPage, (p + 1) * layout.perPage);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(fontSize);
-    doc.setLineWidth(0.1);
-    doc.setDrawColor(0, 0, 0);
+    const usableW = A4_W_MM - mLeft - mRight;
+    const usableH = A4_H_MM - mTop - mBottom;
+    const cols = Math.max(1, Math.floor((usableW + gap) / (cellW + gap)));
+    const rows = Math.max(1, Math.floor((usableH + gap) / (cellH + gap)));
 
-    pageCodes.forEach((code, i) => {
-      const col = i % layout.cols;
-      const row = Math.floor(i / layout.cols);
-      const x = layout.offsetX + col * (layout.cellW + layout.gap);
-      const y = layout.offsetY + row * (layout.cellH + layout.gap);
+    // sem centralização automática: começa exatamente na margem definida,
+    // igual à referência de folha de etiquetas adesivas (Word/editor de etiquetas)
+    const offsetX = mLeft;
+    const offsetY = mTop;
 
-      doc.rect(x, y, layout.cellW, layout.cellH);
+    return { mTop, mLeft, mBottom, mRight, gap, cellW, cellH, cols, rows, offsetX, offsetY, perPage: cols * rows };
+  }
 
-      const lines = code.split('\n');
-      const lineHeight = fontSize * 0.3528 * 1.15;
-      const startCenterY = y + layout.cellH / 2 - (lines.length - 1) * lineHeight / 2;
+  // ---------- auto-ajuste de fonte (usado na pré-visualização, em px de tela) ----------
+  function fitFontSizePx(texts, maxWidthPx, maxHeightPx){
+    const canvas = fitFontSizePx._canvas || (fitFontSizePx._canvas = document.createElement('canvas'));
+    const ctx = canvas.getContext('2d');
+    let size = maxHeightPx * 1.4; // chute inicial
+    const minSize = 4;
+    while(size > minSize){
+      ctx.font = '600 ' + size + 'px "IBM Plex Mono", monospace';
+      let maxW = 0;
+      for(const t of texts){
+        const lines = t.split('\n');
+        for(const line of lines){
+          const w = ctx.measureText(line).width;
+          if(w > maxW) maxW = w;
+        }
+        const lineCount = lines.length;
+        if(size * 1.1 * lineCount > maxHeightPx){ maxW = Infinity; }
+      }
+      if(maxW <= maxWidthPx) return size;
+      size -= 0.5;
+    }
+    return minSize;
+  }
 
-      lines.forEach((line, idx) => {
-        doc.text(
-          line,
-          x + layout.cellW / 2,
-          startCenterY + idx * lineHeight,
-          { align: 'center', baseline: 'middle' }
-        );
+  function renderSheet(){
+    const codes = buildCodes();
+    const sheet = document.getElementById('sheet');
+    sheet.innerHTML = '';
+
+    if(codes.length === 0){
+      sheet.innerHTML = '<p style="color:#999;font-size:13px;">Nenhum código gerado. Confira os campos acima.</p>';
+      document.getElementById('count-badge').textContent = '';
+      document.getElementById('layout-info').textContent = '';
+      return;
+    }
+
+    const layout = getLayout();
+    document.getElementById('layout-info').textContent =
+      layout.cols + ' colunas × ' + layout.rows + ' linhas por página A4 = ' + layout.perPage + ' etiquetas por folha.';
+
+    const totalPages = Math.ceil(codes.length / layout.perPage);
+
+    // px por mm na tela, escala de 96dpi / 25.4mm
+    const PXPMM = 96 / 25.4;
+    const fontPx = fitFontSizePx(codes, (layout.cellW - 1) * PXPMM, (layout.cellH - 0.6) * PXPMM);
+
+    for(let p = 0; p < totalPages; p++){
+      const marker = document.createElement('div');
+      marker.className = 'page-marker';
+      marker.textContent = 'Página ' + (p + 1) + ' de ' + totalPages;
+      sheet.appendChild(marker);
+
+      const page = document.createElement('div');
+      page.className = 'a4-page';
+
+      const pageCodes = codes.slice(p * layout.perPage, (p + 1) * layout.perPage);
+
+      pageCodes.forEach((code, i) => {
+        const col = i % layout.cols;
+        const row = Math.floor(i / layout.cols);
+        const x = layout.offsetX + col * (layout.cellW + layout.gap);
+        const y = layout.offsetY + row * (layout.cellH + layout.gap);
+
+        const cell = document.createElement('div');
+        cell.className = 'label-cell';
+        cell.style.left = x + 'mm';
+        cell.style.top = y + 'mm';
+        cell.style.width = layout.cellW + 'mm';
+        cell.style.height = layout.cellH + 'mm';
+        cell.style.fontSize = fontPx + 'px';
+        cell.textContent = code;
+        page.appendChild(cell);
       });
-    });
+
+      sheet.appendChild(page);
+    }
+
+    document.getElementById('count-badge').textContent =
+      codes.length + ' etiqueta(s) · ' + totalPages + ' página(s) A4';
   }
 
-  doc.save('etiquetas.pdf');
-}
+  // ---------- auto-ajuste de fonte para o PDF (em pt, unidade jsPDF = mm) ----------
+  function fitFontSizePDF(doc, texts, maxWidthMM, maxHeightMM){
+    let size = 14;
+    const minSize = 3;
+    while(size > minSize){
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(size);
+      let maxW = 0;
+      let fits = true;
+      for(const t of texts){
+        const lines = t.split('\n');
+        const lineHeightMM = size * 0.3528 * 1.15;
+        if(lines.length * lineHeightMM > maxHeightMM){ fits = false; break; }
+        for(const line of lines){
+          const w = doc.getTextWidth(line);
+          if(w > maxW) maxW = w;
+        }
+      }
+      if(fits && maxW <= maxWidthMM) return size;
+      size -= 0.25;
+    }
+    return minSize;
+  }
 
-window.addEventListener('DOMContentLoaded', renderSheet);
+  function gerarPDF(){
+    const codes = buildCodes();
+    if(codes.length === 0){
+      alert('Nenhum código gerado. Confira os campos de origem dos códigos.');
+      return;
+    }
+    if(!window.jspdf){
+      alert('A biblioteca de geração de PDF ainda não carregou. Verifique sua conexão e tente novamente.');
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const layout = getLayout();
+
+    const fontSize = fitFontSizePDF(doc, codes, layout.cellW - 1, layout.cellH - 0.6);
+
+    const totalPages = Math.ceil(codes.length / layout.perPage);
+
+    for(let p = 0; p < totalPages; p++){
+      if(p > 0) doc.addPage();
+
+      const pageCodes = codes.slice(p * layout.perPage, (p + 1) * layout.perPage);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(fontSize);
+      doc.setLineWidth(0.1);
+      doc.setDrawColor(0, 0, 0);
+
+      pageCodes.forEach((code, i) => {
+        const col = i % layout.cols;
+        const row = Math.floor(i / layout.cols);
+        const x = layout.offsetX + col * (layout.cellW + layout.gap);
+        const y = layout.offsetY + row * (layout.cellH + layout.gap);
+
+        doc.rect(x, y, layout.cellW, layout.cellH);
+
+        const lines = code.split('\n');
+        const lineHeight = fontSize * 0.3528 * 1.15;
+        const startCenterY = y + layout.cellH / 2 - (lines.length - 1) * lineHeight / 2;
+
+        lines.forEach((line, idx) => {
+          doc.text(
+            line,
+            x + layout.cellW / 2,
+            startCenterY + idx * lineHeight,
+            { align: 'center', baseline: 'middle' }
+          );
+        });
+      });
+    }
+
+    doc.save('etiquetas.pdf');
+  }
+
+  window.addEventListener('DOMContentLoaded', renderSheet);
 </script>
 
 </body>
