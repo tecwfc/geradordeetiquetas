@@ -9,7 +9,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Gerador de Etiquetas">
   
-  <!-- Ícones para tela de início do celular -->
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3Ctext%3E%3C/svg%3E">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232B4A3C'/%3E%3Ctext x='50' y='62' font-family='Georgia,serif' font-size='44' fill='%23fff' text-anchor='middle'%3EAE%3Ctext%3E%3C/svg%3E">
   
@@ -55,417 +54,197 @@
       padding:24px 16px 100px;
     }
 
-    /* ---------------- CABEÇALHO ---------------- */
-    header.title{
-      margin-bottom:24px;
-    }
-
+    header.title{ margin-bottom:24px; }
     .eyebrow{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-size:11px;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      color:var(--brass-deep);
-      font-weight:600;
-      margin-bottom:10px;
+      display:flex; align-items:center; gap:10px;
+      font-size:11px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--brass-deep); font-weight:600; margin-bottom:10px;
     }
     .eyebrow::before{
-      content:'';
-      width:22px;
-      height:1px;
-      background:var(--brass-deep);
-      display:inline-block;
+      content:''; width:22px; height:1px; background:var(--brass-deep); display:inline-block;
     }
-
     header.title h1{
-      font-family:'Fraunces', serif;
-      font-weight:500;
-      font-size:28px;
-      letter-spacing:-0.01em;
-      margin:0 0 8px;
-      color:var(--ink);
+      font-family:'Fraunces', serif; font-weight:500; font-size:28px;
+      letter-spacing:-0.01em; margin:0 0 8px; color:var(--ink);
     }
     header.title p{
-      margin:0;
-      font-size:14px;
-      color:var(--ink-soft);
-      max-width:520px;
-      line-height:1.5;
+      margin:0; font-size:14px; color:var(--ink-soft); max-width:520px; line-height:1.5;
     }
-
     .ruler{
-      display:flex;
-      align-items:flex-end;
-      height:14px;
-      margin-top:18px;
-      gap:0;
+      display:flex; align-items:flex-end; height:14px; margin-top:18px; gap:0;
     }
     .ruler i{
-      flex:1;
-      height:5px;
-      border-left:1px solid var(--line);
+      flex:1; height:5px; border-left:1px solid var(--line);
     }
     .ruler i:nth-child(5n+1){ height:10px; border-left-color:var(--brass); }
 
-    /* ---------------- CARDS ---------------- */
     .panel{
       background:var(--paper-card);
-      border:1px solid var(--line);
-      border-top:2px solid var(--forest);
-      padding:20px 18px 18px;
-      margin-bottom:16px;
-      box-shadow:0 1px 2px rgba(32,36,31,0.03);
-      border-radius: 8px;
+      border:1px solid var(--line); border-top:2px solid var(--forest);
+      padding:20px 18px 18px; margin-bottom:16px;
+      box-shadow:0 1px 2px rgba(32,36,31,0.03); border-radius: 8px;
     }
-
     .panel-head{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      margin-bottom:16px;
-      padding-bottom:12px;
-      border-bottom:1px solid var(--line-soft);
+      display:flex; align-items:center; gap:12px;
+      margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--line-soft);
     }
-
     .step-badge{
-      width:26px;
-      height:26px;
-      flex:none;
-      border-radius:50%;
-      background:var(--forest);
-      color:#fff;
-      font-family:'Fraunces', serif;
-      font-size:13px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      width:26px; height:26px; flex:none; border-radius:50%;
+      background:var(--forest); color:#fff;
+      font-family:'Fraunces', serif; font-size:13px;
+      display:flex; align-items:center; justify-content:center;
     }
-
     .panel-head h2{
-      font-family:'Fraunces', serif;
-      font-weight:500;
-      font-size:15px;
-      letter-spacing:0.01em;
-      margin:0;
-      color:var(--ink);
+      font-family:'Fraunces', serif; font-weight:500; font-size:15px;
+      letter-spacing:0.01em; margin:0; color:var(--ink);
     }
 
     .grid-fields{
-      display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(140px,1fr));
-      gap:12px;
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px;
     }
-
-    .field{
-      position:relative;
-    }
-
+    .field{ position:relative; }
     .field label{
-      display:block;
-      font-size:10.5px;
-      text-transform:uppercase;
-      letter-spacing:0.7px;
-      color:var(--muted);
-      font-weight:600;
-      margin-bottom:6px;
+      display:block; font-size:10.5px; text-transform:uppercase;
+      letter-spacing:0.7px; color:var(--muted); font-weight:600; margin-bottom:6px;
     }
 
-    /* CAMPO DE TEXTO ESTILIZADO (BORDA VERDE E CANTOS REDONDOS) */
     .field input, .field select, .field textarea{
-      width:100%;
-      padding: 12px 10px; 
-      
-      border: 2px solid #2d4f40; 
-      background: #ffffff;       
-      
+      width:100%; padding: 12px 10px; 
+      border: 2px solid #2d4f40; background: #ffffff;       
       font-family:'IBM Plex Mono', ui-monospace, monospace;
-      font-size:14px;
-      font-weight:500;
-      color:var(--ink);
-      
+      font-size:14px; font-weight:500; color:var(--ink);
       border-radius: 6px; 
-      
       transition: border-color .15s ease, box-shadow .15s ease;
     }
-    
     .field input:focus, .field select:focus, .field textarea:focus{
-      outline:none;
-      border-color: #1e362b; 
+      outline:none; border-color: #1e362b; 
       box-shadow: 0 0 0 3px rgba(45, 79, 64, 0.2);
     }
-    
-    .field select{
-      font-family:'Public Sans', sans-serif;
-    }
-
-    /* Quando o campo está desabilitado (travado) */
+    .field select{ font-family:'Public Sans', sans-serif; }
     .field input:disabled{
-      background:var(--line-soft);
-      color:var(--muted);
-      border-color:var(--line-soft);
-      cursor:not-allowed;
+      background:var(--line-soft); color:var(--muted);
+      border-color:var(--line-soft); cursor:not-allowed;
     }
 
-    /* Estilo das SETINHAS */
     .field input[type="number"]{
-      padding-right: 34px;
-      -moz-appearance: textfield; 
+      padding-right: 34px; -moz-appearance: textfield; 
     }
-    .field input[type="number"]:not(:disabled){
-      -moz-appearance: spinbutton;
-    }
-
+    .field input[type="number"]:not(:disabled){ -moz-appearance: spinbutton; }
     .field input[type="number"]:not(:disabled)::-webkit-inner-spin-button,
     .field input[type="number"]:not(:disabled)::-webkit-outer-spin-button {
-      -webkit-appearance: inner-spin-button;
-      opacity: 1;
-      height: 90%;       
-      position: absolute;
-      right: 4px;        
-      top: 5%;
-      bottom: 5%;
-      margin: auto;
+      -webkit-appearance: inner-spin-button; opacity: 1; height: 90%;       
+      position: absolute; right: 4px; top: 5%; bottom: 5%; margin: auto;
     }
 
-    /* ---------------- MODOS / TOGGLES ---------------- */
     .mode-toggle{
-      display:flex;
-      border:1px solid var(--forest);
-      border-radius:6px;
-      overflow:hidden;
-      margin-bottom:16px;
-      width: 100%;
+      display:flex; border:1px solid var(--forest); border-radius:6px;
+      overflow:hidden; margin-bottom:16px; width: 100%;
     }
     .mode-toggle button{
-      flex: 1;
-      padding:12px 18px;
-      border:none;
-      background:#fff;
-      color:var(--forest);
-      font-family:'Public Sans', sans-serif;
-      font-size:13px;
-      font-weight:600;
-      letter-spacing:0.3px;
-      cursor:pointer;
-      transition:background .15s ease, color .15s ease;
-      touch-action: manipulation;
+      flex: 1; padding:12px 18px; border:none; background:#fff;
+      color:var(--forest); font-family:'Public Sans', sans-serif;
+      font-size:13px; font-weight:600; letter-spacing:0.3px; cursor:pointer;
+      transition:background .15s ease, color .15s ease; touch-action: manipulation;
     }
     .mode-toggle button + button{ border-left:1px solid var(--forest); }
-    .mode-toggle button.active{
-      background:var(--forest);
-      color:#fff;
-    }
+    .mode-toggle button.active{ background:var(--forest); color:#fff; }
 
     .lock-btn{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      background:var(--brass-soft);
-      color:var(--brass-deep);
-      border:1px solid var(--brass);
-      border-radius:20px;
-      padding:8px 14px;
-      font-family:'Public Sans', sans-serif;
-      font-size:11.5px;
-      font-weight:600;
-      letter-spacing:0.3px;
-      cursor:pointer;
-      margin-left:auto;
-      transition:background .15s ease;
-      touch-action: manipulation;
+      display:inline-flex; align-items:center; gap:6px;
+      background:var(--brass-soft); color:var(--brass-deep);
+      border:1px solid var(--brass); border-radius:20px;
+      padding:8px 14px; font-family:'Public Sans', sans-serif;
+      font-size:11.5px; font-weight:600; letter-spacing:0.3px; cursor:pointer;
+      margin-left:auto; transition:background .15s ease; touch-action: manipulation;
     }
     .lock-btn:hover{ background:#dfcda3; }
-    .lock-btn.unlocked{
-      background:var(--forest);
-      color:#fff;
-      border-color:var(--forest);
-    }
+    .lock-btn.unlocked{ background:var(--forest); color:#fff; border-color:var(--forest); }
     .lock-btn.unlocked:hover{ background:var(--forest-deep); }
 
-    textarea{
-      min-height:92px;
-      resize:vertical;
-    }
-
-    .hint{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:12px;
-      line-height:1.5;
-    }
-
+    textarea{ min-height:92px; resize:vertical; }
+    .hint{ font-size:12px; color:var(--muted); margin-top:12px; line-height:1.5; }
     .banner{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      background:var(--line-soft);
-      border:1px solid var(--line);
-      border-radius:6px;
-      padding:12px 14px;
-      margin-bottom:16px;
-      font-size:12.5px;
-      color:var(--ink-soft);
-      line-height:1.5;
+      display:flex; align-items:flex-start; gap:10px;
+      background:var(--line-soft); border:1px solid var(--line);
+      border-radius:6px; padding:12px 14px; margin-bottom:16px;
+      font-size:12.5px; color:var(--ink-soft); line-height:1.5;
     }
     .banner b{ color:var(--forest); }
 
-    /* ---------------- AÇÕES ---------------- */
-    .actions{
-      display:flex;
-      flex-direction: column;
-      gap:12px;
-      align-items:stretch;
-    }
-
+    .actions{ display:flex; flex-direction: column; gap:12px; align-items:stretch; }
     button.primary{
-      background:var(--forest);
-      color:#fff;
-      border:none;
-      padding:14px 26px;
-      font-family:'Public Sans', sans-serif;
-      font-size:15px;
-      font-weight:600;
-      letter-spacing:0.3px;
-      border-radius:6px;
-      cursor:pointer;
+      background:var(--forest); color:#fff; border:none;
+      padding:14px 26px; font-family:'Public Sans', sans-serif;
+      font-size:15px; font-weight:600; letter-spacing:0.3px;
+      border-radius:6px; cursor:pointer;
       transition:background .15s ease, transform .1s ease;
-      touch-action: manipulation;
-      width: 100%;
+      touch-action: manipulation; width: 100%;
     }
     button.primary:active{ transform:translateY(2px); background: var(--forest-deep); }
-
-    button.primary.brass{
-      background:var(--brass);
-    }
+    button.primary.brass{ background:var(--brass); }
     button.primary.brass:active{ background:var(--brass-deep); }
 
     .count-badge{
-      font-family:'IBM Plex Mono', monospace;
-      font-size:12px;
-      color:var(--ink-soft);
-      text-align: center;
-      background:var(--line-soft);
-      padding:10px 14px;
-      border-radius:20px;
-      margin-top: 6px;
+      font-family:'IBM Plex Mono', monospace; font-size:12px;
+      color:var(--ink-soft); text-align: center;
+      background:var(--line-soft); padding:10px 14px;
+      border-radius:20px; margin-top: 6px;
     }
 
-    /* ---------------- ÁREA DE VISUALIZAÇÃO ---------------- */
     .sheet-wrap{
-      background:#EFEFE9;
-      border:1px solid var(--line);
-      padding:12px;
-      overflow-x:auto;
-      border-radius:6px;
+      background:#EFEFE9; border:1px solid var(--line);
+      padding:12px; overflow-x:auto; border-radius:6px;
     }
     .sheet-wrap::before{
       content:'↔ Deslize para o lado para ver a folha inteira';
-      display:block;
-      font-size:11px;
-      color:var(--muted);
-      margin-bottom:10px;
-      text-align:center;
+      display:block; font-size:11px; color:var(--muted);
+      margin-bottom:10px; text-align:center;
     }
 
     #sheet{ background:transparent; }
-
     .a4-page{
-      width:210mm;
-      height:297mm;
-      position:relative;
-      background:#fff;
-      box-shadow:0 2px 10px rgba(32,36,31,0.12);
-      margin:0 auto 16px;
-      transform-origin: top left;
+      width:210mm; height:297mm; position:relative;
+      background:#fff; box-shadow:0 2px 10px rgba(32,36,31,0.12);
+      margin:0 auto 16px; transform-origin: top left;
     }
-
     .label-cell{
-      position:absolute;
-      border:1px solid var(--ink);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      font-weight:600;
-      overflow:hidden;
-      white-space:pre-line;
-      line-height:1.05;
-      background:#fff;
+      position:absolute; border:1px solid var(--ink);
+      display:flex; align-items:center; justify-content:center; text-align:center;
+      font-weight:600; overflow:hidden; white-space:pre-line;
+      line-height:1.05; background:#fff;
     }
 
     .page-marker{
-      font-family:'Public Sans', sans-serif;
-      font-size:10.5px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:1.2px;
-      font-weight:600;
-      margin:16px 0 8px;
-      text-align:center;
+      font-family:'Public Sans', sans-serif; font-size:10.5px;
+      color:var(--muted); text-transform:uppercase; letter-spacing:1.2px;
+      font-weight:600; margin:16px 0 8px; text-align:center;
     }
     .page-marker:first-child{ margin-top:0; }
-
     footer.app-foot{
-      text-align:center;
-      font-size:11px;
-      color:var(--muted);
-      margin-top:36px;
-      letter-spacing:0.3px;
+      text-align:center; font-size:11px; color:var(--muted);
+      margin-top:36px; letter-spacing:0.3px;
     }
 
-    /* ---------------- BOTÃO DE INSTALAR (PWA) ---------------- */
-    #install-container {
-      display: none;
-      text-align: center;
-      margin-bottom: 20px;
-    }
+    #install-container { display: none; text-align: center; margin-bottom: 20px; }
     #install-btn {
-      background: var(--brass);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 30px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      width: 100%;
-      touch-action: manipulation;
+      background: var(--brass); color: white; border: none;
+      padding: 12px 24px; border-radius: 30px; font-weight: 700;
+      font-size: 14px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      width: 100%; touch-action: manipulation;
     }
-    #install-btn:active {
-      transform: scale(0.98);
-    }
+    #install-btn:active { transform: scale(0.98); }
 
-    /* ---------------- RESPONSIVO ---------------- */
     @media (max-width: 480px){
       .app{ padding:16px 12px 80px; }
       header.title h1{ font-size:24px; }
-      
       .panel{ padding:14px 12px 14px; border-radius: 0; }
-      
-      .grid-fields{
-        grid-template-columns:1fr 1fr;
-        gap:8px;
-      }
-      .grid-fields .field:last-child{
-        grid-column: span 2;
-      }
-      
+      .grid-fields{ grid-template-columns:1fr 1fr; gap:8px; }
+      .grid-fields .field:last-child{ grid-column: span 2; }
       .field input, .field select, .field textarea{
-        padding: 14px 10px;
-        font-size: 16px;
-        border-radius: 8px;
+        padding: 14px 10px; font-size: 16px; border-radius: 8px;
       }
-      .field input[type="number"]{
-        padding-right: 40px;
-      }
-      
-      button.primary{
-        font-size: 17px;
-        padding: 16px;
-      }
+      .field input[type="number"]{ padding-right: 40px; }
+      button.primary{ font-size: 17px; padding: 16px; }
     }
 
     @media (max-width: 380px){
@@ -518,7 +297,7 @@
       <div class="grid-fields">
         <div class="field">
           <label for="prefix">Prefixo</label>
-          <input id="prefix" type="text" value="BPP">
+          <input id="prefix" type="text" value="CR">
         </div>
         <div class="field">
           <label for="start">Número inicial</label>
@@ -526,7 +305,7 @@
         </div>
         <div class="field">
           <label for="end">Número final</label>
-          <input id="end" type="number" value="150" min="0">
+          <input id="end" type="number" value="10" min="0">
         </div>
         <div class="field">
           <label for="digits">Dígitos (zeros à esquerda)</label>
@@ -535,24 +314,42 @@
         <div class="field">
           <label for="separator">Separador</label>
           <select id="separator">
-            <option value=" " selected>Espaço (BPP 014)</option>
-            <option value="-">Hífen (BPP-014)</option>
-            <option value="">Nenhum (BPP014)</option>
-            <option value="\n">Quebra de linha</option>
+            <option value=" " selected>Espaço (CR 001)</option>
+            <option value="-">Hífen (CR-001)</option>
+            <option value="">Nenhum (CR001)</option>
           </select>
         </div>
+        
+        <!-- CAMPO DE TAMANHO/MEDIDA (SUFIXO) -->
+        <div class="field">
+          <label for="seq-suffix">Tamanho / Medida (Sufixo)</label>
+          <input id="seq-suffix" type="text" value="45" placeholder="Ex: 45, 13, 60">
+          <p class="hint" style="margin-top: 4px; font-size: 11px;">Deixe em branco para gerar sem barra. Ex: CR 001/45</p>
+        </div>
       </div>
-      <p class="hint">Exemplo: prefixo "BPP", início 1, dígitos 3, separador espaço → BPP 001, BPP 002, BPP 003...</p>
+      <p class="hint">Exemplo: Prefixo CR, número 001 a 010, sufixo 45 → CR 001/45, CR 002/45...</p>
     </div>
 
     <div id="mode-list" style="display:none">
       <div class="field">
         <label for="list-input">Uma etiqueta por linha</label>
-        <textarea id="list-input" placeholder="BPP 014&#10;BPP 015&#10;BPP 024&#10;...">BPP 014
-BPP 015
-BPP 024
-BPP 025
-BPP 026</textarea>
+        <textarea id="list-input" placeholder="Digite um código por linha..."></textarea>
+        
+        <div class="grid-fields" style="margin-top: 12px;">
+          <div class="field">
+            <label for="slash-position">Inserir barra automática</label>
+            <select id="slash-position">
+              <option value="0">Não usar barra</option>
+              <option value="3" selected>Após 3 dígitos (CR 253/45)</option>
+              <option value="4">Após 4 dígitos (CR 2534/5)</option>
+              <option value="2">Após 2 dígitos (CR 25/345)</option>
+              <option value="5">Após 5 dígitos (CR 25345/...)</option>
+            </select>
+            <p class="hint" style="margin-top: 4px;">A barra será inserida automaticamente nos números que tiverem essa quantidade de dígitos.</p>
+          </div>
+        </div>
+
+        <button class="primary" onclick="loadExample()" style="background:var(--brass); margin-top: 12px; padding: 10px;">📋 Carregar Exemplo (Vários tipos)</button>
       </div>
     </div>
   </div>
@@ -624,12 +421,10 @@ BPP 026</textarea>
     <div class="grid-fields" style="grid-template-columns: 1fr 1fr;">
       <div class="field">
         <label for="font-select">Fonte do texto</label>
-        <!-- Agora o select é preenchido via JavaScript -->
         <select id="font-select"></select>
       </div>
       <div class="field">
         <label for="color-select">Cor do texto</label>
-        <!-- Agora o select é preenchido via JavaScript -->
         <select id="color-select"></select>
       </div>
     </div>
@@ -687,7 +482,6 @@ BPP 026</textarea>
       deferredPrompt = null;
     }
   });
-  // --- FIM DO SCRIPT DE INSTALAÇÃO ---
 
   function setMode(mode){
     currentMode = mode;
@@ -697,11 +491,32 @@ BPP 026</textarea>
     document.getElementById('btn-mode-list').classList.toggle('active', mode === 'list');
   }
 
+  // Carrega exemplos para a lista manual
+  function loadExample() {
+    const textarea = document.getElementById('list-input');
+    textarea.value = `BP 001
+BPZ 001
+BPP 001
+BPF 001
+BPZF 001
+AR 014
+ARP 014
+ARF 001
+PG 001
+PGP 001
+PGF 001
+CR 25345
+CRP 25345
+CRF 253045
+BC 0098
+BCP 0098
+BCF 0098`;
+    renderSheet();
+  }
+
   function toggleDimLock(){
     dimsLocked = !dimsLocked;
-    document.querySelectorAll('.dimension-field').forEach(el => { 
-      el.disabled = dimsLocked;
-    });
+    document.querySelectorAll('.dimension-field').forEach(el => { el.disabled = dimsLocked; });
     const btn = document.getElementById('dim-lock-btn');
     if(dimsLocked){
       btn.textContent = '🔒 Dimensões travadas';
@@ -716,10 +531,7 @@ BPP 026</textarea>
     marginsLocked = !marginsLocked;
     document.querySelectorAll('.margin-field').forEach(el => { 
       el.disabled = marginsLocked;
-      if(!marginsLocked){
-        el.min = 0;
-        el.max = 10;
-      }
+      if(!marginsLocked){ el.min = 0; el.max = 10; }
     });
     const btn = document.getElementById('lock-btn');
     if(marginsLocked){
@@ -747,15 +559,42 @@ BPP 026</textarea>
       const end = parseInt(document.getElementById('end').value, 10);
       const digits = parseInt(document.getElementById('digits').value, 10);
       const sep = document.getElementById('separator').value;
+      const suffix = document.getElementById('seq-suffix').value.trim();
+      
       const codes = [];
       if(isNaN(start) || isNaN(end) || end < start) return codes;
+      
       for(let i = start; i <= end; i++){
-        codes.push(prefix + sep + String(i).padStart(digits, '0'));
+        let number = String(i).padStart(digits, '0');
+        let code = prefix + sep + number;
+        // Se tiver um sufixo (tamanho) preenchido, adiciona a barra e o sufixo
+        if (suffix !== '') {
+          code += '/' + suffix;
+        }
+        codes.push(code);
       }
       return codes;
     } else {
       const raw = document.getElementById('list-input').value;
-      return raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+      const slashPos = parseInt(document.getElementById('slash-position').value, 10);
+      
+      let codes = raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+      
+      // Se o usuário escolheu uma posição para a barra, aplica a formatação
+      if (slashPos > 0) {
+        codes = codes.map(code => {
+          const match = code.match(/^([A-Za-z\s]+)(\d+)$/);
+          if (match && match[2].length > slashPos) {
+            const prefix = match[1];
+            const number = match[2];
+            const formatted = number.slice(0, slashPos) + '/' + number.slice(slashPos);
+            return prefix + formatted;
+          }
+          return code;
+        });
+      }
+      
+      return codes;
     }
   }
 
@@ -814,11 +653,9 @@ BPP 026</textarea>
     }
 
     const layout = getLayout();
-    
     document.getElementById('layout-info').textContent =
       layout.cols + ' colunas × ' + layout.rows + ' linhas por página A4 = ' + layout.perPage + ' etiquetas por folha.';
 
-    // Pega as configurações de estilo escolhidas pelo usuário
     const selectedFont = document.getElementById('font-select').value;
     const selectedColor = document.getElementById('color-select').value;
 
@@ -850,7 +687,6 @@ BPP 026</textarea>
         cell.style.width = layout.cellW + 'mm';
         cell.style.height = layout.cellH + 'mm';
         
-        // Aplica a fonte e a cor escolhidas
         cell.style.fontFamily = selectedFont;
         cell.style.color = selectedColor;
         cell.style.fontSize = fontPx + 'px';
@@ -903,30 +739,17 @@ BPP 026</textarea>
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const layout = getLayout();
 
-    // Pega as configurações de estilo escolhidas pelo usuário para o PDF
     const selectedFont = document.getElementById('font-select').value;
     const selectedColor = document.getElementById('color-select').value;
     
-    // Mapeia a fonte do CSS para a fonte do jsPDF (compatibilidade)
-    let pdfFont = 'courier'; // Padrão monoespaçado
+    let pdfFont = 'courier';
     const fontMap = {
-      'monospace': 'courier',
-      'Courier': 'courier',
-      'Sans-serif': 'helvetica',
-      'Arial': 'helvetica',
-      'Montserrat': 'helvetica',
-      'Oswald': 'helvetica',
-      'Roboto': 'helvetica',
-      'Poppins': 'helvetica',
-      'Open Sans': 'helvetica',
-      'Lato': 'helvetica'
+      'monospace': 'courier', 'Courier': 'courier', 'Sans-serif': 'helvetica',
+      'Arial': 'helvetica', 'Montserrat': 'helvetica', 'Oswald': 'helvetica',
+      'Roboto': 'helvetica', 'Poppins': 'helvetica', 'Open Sans': 'helvetica', 'Lato': 'helvetica'
     };
-    // Verifica se a fonte selecionada possui um mapeamento para PDF
     for (let [key, value] of Object.entries(fontMap)) {
-      if (selectedFont.includes(key)) {
-        pdfFont = value;
-        break;
-      }
+      if (selectedFont.includes(key)) { pdfFont = value; break; }
     }
 
     const fontSize = fitFontSizePDF(doc, codes, layout.cellW - 1, layout.cellH - 0.6);
@@ -937,7 +760,6 @@ BPP 026</textarea>
 
       const pageCodes = codes.slice(p * layout.perPage, (p + 1) * layout.perPage);
       
-      // Aplica a fonte e cor no PDF
       doc.setFont(pdfFont, 'bold');
       doc.setFontSize(fontSize);
       doc.setTextColor(selectedColor);
@@ -974,7 +796,6 @@ BPP 026</textarea>
   // CRIAÇÃO DAS 50 FONTES E CENTENAS DE CORES DINAMICAMENTE
   // =========================================================================
 
-  // 1. Lista com 50 Fontes
   const fontList = [
     { name: "IBM Plex Mono (Padrão)", value: "'IBM Plex Mono', monospace" },
     { name: "Courier New", value: "'Courier New', Courier, monospace" },
@@ -1028,8 +849,8 @@ BPP 026</textarea>
     { name: "Akshar", value: "'Akshar', sans-serif" }
   ];
 
-  // 2. Lista com MAIS DE 400 CORES (Nomes em Português)
   const colorList = [
+    { name: "Preto", value: "#000000" },
     { name: "Branco Nevada", value: "#FFFAFA" },
     { name: "Branco Fantasma", value: "#F8F8FF" },
     { name: "Fumaça Branca", value: "#F5F5F5" },
@@ -1056,7 +877,6 @@ BPP 026</textarea>
     { name: "Roxo Lavanda", value: "#FFF0F5" },
     { name: "Rosa Neblina", value: "#FFE4E1" },
     { name: "Branco", value: "#FFFFFF" },
-    { name: "Preto", value: "#000000" },
     { name: "Cinza Ardósia Escuro", value: "#2F4F4F" },
     { name: "Cinza Opaco", value: "#696969" },
     { name: "Cinza Ardósia", value: "#708090" },
@@ -1486,16 +1306,13 @@ BPP 026</textarea>
     { name: "Chocolate 2", value: "#EE7621" }
   ];
 
-  // 3. Função que preenche os dropdowns
   function populateOptions() {
     const fontSelect = document.getElementById('font-select');
     const colorSelect = document.getElementById('color-select');
 
-    // Limpa as opções existentes
     fontSelect.innerHTML = '';
     colorSelect.innerHTML = '';
 
-    // Popula as 50 fontes
     fontList.forEach(item => {
       const opt = document.createElement('option');
       opt.value = item.value;
@@ -1503,7 +1320,6 @@ BPP 026</textarea>
       fontSelect.appendChild(opt);
     });
 
-    // Popula as +400 cores com nomes em português
     colorList.forEach(item => {
       const opt = document.createElement('option');
       opt.value = item.value;
@@ -1511,16 +1327,13 @@ BPP 026</textarea>
       colorSelect.appendChild(opt);
     });
 
-    // --- DEFINE A COR PRETA COMO PADRÃO ---
     colorSelect.value = "#000000"; 
   }
 
-  // Roda a função assim que a página carregar
   window.addEventListener('DOMContentLoaded', () => {
     populateOptions();
     renderSheet();
   });
-
 </script>
 
 </body>
