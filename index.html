@@ -459,6 +459,7 @@
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
   let currentMode = 'seq';
   let marginsLocked = true;
@@ -491,7 +492,6 @@
     document.getElementById('btn-mode-list').classList.toggle('active', mode === 'list');
   }
 
-  // Carrega exemplos para a lista manual
   function loadExample() {
     const textarea = document.getElementById('list-input');
     textarea.value = `BP 001
@@ -567,7 +567,6 @@ BCF 0098`;
       for(let i = start; i <= end; i++){
         let number = String(i).padStart(digits, '0');
         let code = prefix + sep + number;
-        // Se tiver um sufixo (tamanho) preenchido, adiciona a barra e o sufixo
         if (suffix !== '') {
           code += '/' + suffix;
         }
@@ -580,7 +579,6 @@ BCF 0098`;
       
       let codes = raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
       
-      // Se o usuário escolheu uma posição para a barra, aplica a formatação
       if (slashPos > 0) {
         codes = codes.map(code => {
           const match = code.match(/^([A-Za-z\s]+)(\d+)$/);
@@ -701,36 +699,72 @@ BCF 0098`;
     document.getElementById('count-badge').textContent = codes.length;
   }
 
-  function fitFontSizePDF(doc, texts, maxWidthMM, maxHeightMM){
-    let size = 14;
-    const minSize = 3;
-    while(size > minSize){
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(size);
-      let maxW = 0;
-      let fits = true;
-      for(const t of texts){
-        const lines = t.split('\n');
-        const lineHeightMM = size * 0.3528 * 1.15;
-        if(lines.length * lineHeightMM > maxHeightMM){ fits = false; break; }
-        for(const line of lines){
-          const w = doc.getTextWidth(line);
-          if(w > maxW) maxW = w;
-        }
-      }
-      if(fits && maxW <= maxWidthMM) return size;
-      size -= 0.25;
-    }
-    return minSize;
-  }
+  // ============================================================
+  // MAPEAMENTO DE FONTES PARA O PDF
+  // ============================================================
+  const fontMap = {
+    "'IBM Plex Mono', monospace": { name: "IBMPlexMono", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/ibmplexmono/static/IBMPlexMono-Bold.ttf" },
+    "'Courier New', Courier, monospace": { name: "Courier", url: null },
+    "'Montserrat', sans-serif": { name: "Montserrat", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/montserrat/static/Montserrat-Bold.ttf" },
+    "'Oswald', sans-serif": { name: "Oswald", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/oswald/static/Oswald-Bold.ttf" },
+    "'Roboto', sans-serif": { name: "Roboto", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/roboto/static/Roboto-Bold.ttf" },
+    "'Open Sans', sans-serif": { name: "OpenSans", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/opensans/static/OpenSans-Bold.ttf" },
+    "'Lato', sans-serif": { name: "Lato", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/lato/static/Lato-Bold.ttf" },
+    "'Playfair Display', serif": { name: "PlayfairDisplay", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/playfairdisplay/static/PlayfairDisplay-Bold.ttf" },
+    "'Merriweather', serif": { name: "Merriweather", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/merriweather/static/Merriweather-Bold.ttf" },
+    "'Lora', serif": { name: "Lora", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/lora/static/Lora-Bold.ttf" },
+    "'Bitter', serif": { name: "Bitter", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/bitter/static/Bitter-Bold.ttf" },
+    "'Arvo', serif": { name: "Arvo", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/arvo/static/Arvo-Bold.ttf" },
+    "'Cinzel', serif": { name: "Cinzel", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/cinzel/static/Cinzel-Bold.ttf" },
+    "'Cabin', sans-serif": { name: "Cabin", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/cabin/static/Cabin-Bold.ttf" },
+    "'Source Code Pro', monospace": { name: "SourceCodePro", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/sourcecodepro/static/SourceCodePro-Bold.ttf" },
+    "'Exo 2', sans-serif": { name: "Exo2", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/exo2/static/Exo2-Bold.ttf" },
+    "'Comfortaa', sans-serif": { name: "Comfortaa", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/comfortaa/static/Comfortaa-Bold.ttf" },
+    "'Quicksand', sans-serif": { name: "Quicksand", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/quicksand/static/Quicksand-Bold.ttf" },
+    "'Josefin Sans', sans-serif": { name: "JosefinSans", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/josefinsans/static/JosefinSans-Bold.ttf" },
+    "'Arimo', sans-serif": { name: "Arimo", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/arimo/static/Arimo-Bold.ttf" },
+    "'Francois One', sans-serif": { name: "FrancoisOne", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/francoisone/static/FrancoisOne-Regular.ttf" },
+    "'Anton', sans-serif": { name: "Anton", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/anton/static/Anton-Regular.ttf" },
+    "'Bangers', sans-serif": { name: "Bangers", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/bangers/static/Bangers-Regular.ttf" },
+    "'Bree Serif', serif": { name: "BreeSerif", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/breeserif/static/BreeSerif-Regular.ttf" },
+    "'Kanit', sans-serif": { name: "Kanit", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/kanit/static/Kanit-Bold.ttf" },
+    "'Abril Fatface', serif": { name: "AbrilFatface", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/abrilfatface/static/AbrilFatface-Regular.ttf" },
+    "'Alfa Slab One', serif": { name: "AlfaSlabOne", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/alfaslabone/static/AlfaSlabOne-Regular.ttf" },
+    "'Architects Daughter', sans-serif": { name: "ArchitectsDaughter", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/architectsdaughter/static/ArchitectsDaughter-Regular.ttf" },
+    "'Berkshire Swash', serif": { name: "BerkshireSwash", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/berkshireswash/static/BerkshireSwash-Regular.ttf" },
+    "'Black Ops One', sans-serif": { name: "BlackOpsOne", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/blackopsone/static/BlackOpsOne-Regular.ttf" },
+    "'Bungee', sans-serif": { name: "Bungee", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/bungee/static/Bungee-Regular.ttf" },
+    "'Courgette', serif": { name: "Courgette", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/courgette/static/Courgette-Regular.ttf" },
+    "'Dancing Script', serif": { name: "DancingScript", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/dancingscript/static/DancingScript-Bold.ttf" },
+    "'Fugaz One', sans-serif": { name: "FugazOne", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/fugazone/static/FugazOne-Regular.ttf" },
+    "'Great Vibes', serif": { name: "GreatVibes", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/greatvibes/static/GreatVibes-Regular.ttf" },
+    "'Hammersmith One', sans-serif": { name: "HammersmithOne", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/hammersmithone/static/HammersmithOne-Regular.ttf" },
+    "'Indie Flower', serif": { name: "IndieFlower", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/indieflower/static/IndieFlower-Regular.ttf" },
+    "'Kalam', serif": { name: "Kalam", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/kalam/static/Kalam-Bold.ttf" },
+    "'Lobster', serif": { name: "Lobster", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/lobster/static/Lobster-Regular.ttf" },
+    "'Pacifico', serif": { name: "Pacifico", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/pacifico/static/Pacifico-Regular.ttf" },
+    "'Patrick Hand', serif": { name: "PatrickHand", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/patrickhand/static/PatrickHand-Regular.ttf" },
+    "'Paytone One', sans-serif": { name: "PaytoneOne", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/paytoneone/static/PaytoneOne-Regular.ttf" },
+    "'Righteous', sans-serif": { name: "Righteous", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/righteous/static/Righteous-Regular.ttf" },
+    "'Rubik', sans-serif": { name: "Rubik", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/rubik/static/Rubik-Bold.ttf" },
+    "'Satisfy', serif": { name: "Satisfy", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/satisfy/static/Satisfy-Regular.ttf" },
+    "'Poppins', sans-serif": { name: "Poppins", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/poppins/static/Poppins-Bold.ttf" },
+    "'Raleway', sans-serif": { name: "Raleway", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/raleway/static/Raleway-Bold.ttf" },
+    "'Roboto Condensed', sans-serif": { name: "RobotoCondensed", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/robotocondensed/static/RobotoCondensed-Bold.ttf" },
+    "'Cabin Condensed', sans-serif": { name: "CabinCondensed", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/cabincondensed/static/CabinCondensed-Bold.ttf" },
+    "'Akshar', sans-serif": { name: "Akshar", url: "https://cdn.jsdelivr.net/gh/google/fonts/ofl/akshar/static/Akshar-Bold.ttf" }
+  };
 
-  function gerarPDF(){
+  // ============================================================
+  // FUNÇÃO DE GERAÇÃO DE PDF COM FONTES INCORPORADAS
+  // ============================================================
+  async function gerarPDF() {
     const codes = buildCodes();
-    if(codes.length === 0){
+    if (codes.length === 0) {
       alert('Nenhum código gerado. Confira os campos de origem dos códigos.');
       return;
     }
-    if(!window.jspdf){
+    if (!window.jspdf) {
       alert('A biblioteca de geração de PDF ainda não carregou. Verifique sua conexão e tente novamente.');
       return;
     }
@@ -741,26 +775,46 @@ BCF 0098`;
 
     const selectedFont = document.getElementById('font-select').value;
     const selectedColor = document.getElementById('color-select').value;
-    
-    let pdfFont = 'courier';
-    const fontMap = {
-      'monospace': 'courier', 'Courier': 'courier', 'Sans-serif': 'helvetica',
-      'Arial': 'helvetica', 'Montserrat': 'helvetica', 'Oswald': 'helvetica',
-      'Roboto': 'helvetica', 'Poppins': 'helvetica', 'Open Sans': 'helvetica', 'Lato': 'helvetica'
-    };
-    for (let [key, value] of Object.entries(fontMap)) {
-      if (selectedFont.includes(key)) { pdfFont = value; break; }
+
+    // Pega as informações da fonte selecionada
+    const fontInfo = fontMap[selectedFont];
+    let pdfFontName = 'helvetica'; // fallback padrão
+
+    if (fontInfo && fontInfo.url) {
+      try {
+        // Baixa a fonte TTF
+        const response = await fetch(fontInfo.url);
+        if (!response.ok) throw new Error('Fonte não encontrada');
+        const fontData = await response.arrayBuffer();
+        const base64 = btoa(String.fromCharCode(...new Uint8Array(fontData)));
+        
+        // Registra a fonte no jsPDF
+        const fontFileName = fontInfo.name + '.ttf';
+        doc.addFileToVFS(fontFileName, base64);
+        doc.addFont(fontFileName, fontInfo.name, 'bold');
+        pdfFontName = fontInfo.name;
+      } catch (error) {
+        console.warn(`Fonte ${fontInfo.name} não carregada, usando Helvetica como fallback.`, error);
+        pdfFontName = 'helvetica';
+      }
+    } else {
+      // Fontes padrão do jsPDF
+      pdfFontName = 'helvetica';
+      if (selectedFont.includes('Courier') || selectedFont.includes('monospace')) {
+        pdfFontName = 'courier';
+      }
     }
 
+    // Calcula o tamanho da fonte
     const fontSize = fitFontSizePDF(doc, codes, layout.cellW - 1, layout.cellH - 0.6);
     const totalPages = Math.ceil(codes.length / layout.perPage);
 
-    for(let p = 0; p < totalPages; p++){
-      if(p > 0) doc.addPage();
+    for (let p = 0; p < totalPages; p++) {
+      if (p > 0) doc.addPage();
 
       const pageCodes = codes.slice(p * layout.perPage, (p + 1) * layout.perPage);
       
-      doc.setFont(pdfFont, 'bold');
+      doc.setFont(pdfFontName, 'bold');
       doc.setFontSize(fontSize);
       doc.setTextColor(selectedColor);
       doc.setLineWidth(0.1);
@@ -792,9 +846,32 @@ BCF 0098`;
     doc.save('etiquetas.pdf');
   }
 
-  // =========================================================================
-  // CRIAÇÃO DAS 50 FONTES E CENTENAS DE CORES DINAMICAMENTE
-  // =========================================================================
+  function fitFontSizePDF(doc, texts, maxWidthMM, maxHeightMM) {
+    let size = 14;
+    const minSize = 3;
+    while (size > minSize) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(size);
+      let maxW = 0;
+      let fits = true;
+      for (const t of texts) {
+        const lines = t.split('\n');
+        const lineHeightMM = size * 0.3528 * 1.15;
+        if (lines.length * lineHeightMM > maxHeightMM) { fits = false; break; }
+        for (const line of lines) {
+          const w = doc.getTextWidth(line);
+          if (w > maxW) maxW = w;
+        }
+      }
+      if (fits && maxW <= maxWidthMM) return size;
+      size -= 0.25;
+    }
+    return minSize;
+  }
+
+  // ============================================================
+  // LISTA DE FONTES E CORES
+  // ============================================================
 
   const fontList = [
     { name: "IBM Plex Mono (Padrão)", value: "'IBM Plex Mono', monospace" },
@@ -976,334 +1053,7 @@ BCF 0098`;
     { name: "Violeta Azulado", value: "#8A2BE2" },
     { name: "Roxo", value: "#A020F0" },
     { name: "Roxo Médio", value: "#9370DB" },
-    { name: "Cardo", value: "#D8BFD8" },
-    { name: "Branco Nevada 1", value: "#FFFAFA" },
-    { name: "Branco Nevada 2", value: "#EEE9E9" },
-    { name: "Branco Nevada 3", value: "#CDC9C9" },
-    { name: "Branco Nevada 4", value: "#8B8989" },
-    { name: "Concha 1", value: "#FFF5EE" },
-    { name: "Concha 2", value: "#EEE5DE" },
-    { name: "Concha 3", value: "#CDC5BF" },
-    { name: "Concha 4", value: "#8B8682" },
-    { name: "Branco Antigo 1", value: "#FFEFDB" },
-    { name: "Branco Antigo 2", value: "#EEDFCC" },
-    { name: "Branco Antigo 3", value: "#CDC0B0" },
-    { name: "Branco Antigo 4", value: "#8B8378" },
-    { name: "Bisque 1", value: "#FFE4C4" },
-    { name: "Bisque 2", value: "#EED5B7" },
-    { name: "Bisque 3", value: "#CDB79E" },
-    { name: "Bisque 4", value: "#8B7D6B" },
-    { name: "Pêssego 1", value: "#FFDAB9" },
-    { name: "Pêssego 2", value: "#EECBAD" },
-    { name: "Pêssego 3", value: "#CDAF95" },
-    { name: "Pêssego 4", value: "#8B7765" },
-    { name: "Branco Navajo 1", value: "#FFDEAD" },
-    { name: "Branco Navajo 2", value: "#EECFA1" },
-    { name: "Branco Navajo 3", value: "#CDB38B" },
-    { name: "Branco Navajo 4", value: "#8B795E" },
-    { name: "Chifre de Limão 1", value: "#FFFACD" },
-    { name: "Chifre de Limão 2", value: "#EEE9BF" },
-    { name: "Chifre de Limão 3", value: "#CDC9A5" },
-    { name: "Chifre de Limão 4", value: "#8B8970" },
-    { name: "Seda de Milho 1", value: "#FFF8DC" },
-    { name: "Seda de Milho 2", value: "#EEE8CD" },
-    { name: "Seda de Milho 3", value: "#CDC8B1" },
-    { name: "Seda de Milho 4", value: "#8B8878" },
-    { name: "Marfim 1", value: "#FFFFF0" },
-    { name: "Marfim 2", value: "#EEEEE0" },
-    { name: "Marfim 3", value: "#CDCDC1" },
-    { name: "Marfim 4", value: "#8B8B83" },
-    { name: "Mel 1", value: "#F0FFF0" },
-    { name: "Mel 2", value: "#E0EEE0" },
-    { name: "Mel 3", value: "#C1CDC1" },
-    { name: "Mel 4", value: "#838B83" },
-    { name: "Roxo Lavanda 1", value: "#FFF0F5" },
-    { name: "Roxo Lavanda 2", value: "#EEE0E5" },
-    { name: "Roxo Lavanda 3", value: "#CDC1C5" },
-    { name: "Roxo Lavanda 4", value: "#8B8386" },
-    { name: "Cinza Ardósia 4", value: "#6C7B8B" },
-    { name: "Azul Aço Claro 1", value: "#CAE1FF" },
-    { name: "Azul Aço Claro 2", value: "#BCD2EE" },
-    { name: "Azul Aço Claro 3", value: "#A2B5CD" },
-    { name: "Azul Aço Claro 4", value: "#6E7B8B" },
-    { name: "Azul Claro 1", value: "#BFEFFF" },
-    { name: "Azul Claro 2", value: "#B2DFEE" },
-    { name: "Azul Claro 3", value: "#9AC0CD" },
-    { name: "Azul Claro 4", value: "#68838B" },
-    { name: "Ciano Claro 1", value: "#E0FFFF" },
-    { name: "Ciano Claro 2", value: "#D1EEEE" },
-    { name: "Ciano Claro 3", value: "#B4CDCD" },
-    { name: "Ciano Claro 4", value: "#7A8B8B" },
-    { name: "Turquesa Pálida 1", value: "#BBFFFF" },
-    { name: "Turquesa Pálida 2", value: "#AEEEEE" },
-    { name: "Turquesa Pálida 3", value: "#96CDCD" },
-    { name: "Turquesa Pálida 4", value: "#668B8B" },
-    { name: "Azul Cadete 1", value: "#98F5FF" },
-    { name: "Azul Cadete 2", value: "#8EE5EE" },
-    { name: "Azul Cadete 3", value: "#7AC5CD" },
-    { name: "Azul Cadete 4", value: "#53868B" },
-    { name: "Turquesa 1", value: "#00F5FF" },
-    { name: "Turquesa 2", value: "#00E5EE" },
-    { name: "Turquesa 3", value: "#00C5CD" },
-    { name: "Turquesa 4", value: "#00868B" },
-    { name: "Ciano 1", value: "#00FFFF" },
-    { name: "Ciano 2", value: "#00EEEE" },
-    { name: "Ciano 3", value: "#00CDCD" },
-    { name: "Ciano 4", value: "#008B8B" },
-    { name: "Cinza Ardósia Escuro 1", value: "#97FFFF" },
-    { name: "Cinza Ardósia Escuro 2", value: "#8DEEEE" },
-    { name: "Cinza Ardósia Escuro 3", value: "#79CDCD" },
-    { name: "Cinza Ardósia Escuro 4", value: "#528B8B" },
-    { name: "Água Marinha 1", value: "#7FFFD4" },
-    { name: "Água Marinha 2", value: "#76EEC6" },
-    { name: "Água Marinha 3", value: "#66CDAA" },
-    { name: "Água Marinha 4", value: "#458B74" },
-    { name: "Verde Mar Escuro 1", value: "#C1FFC1" },
-    { name: "Verde Mar Escuro 2", value: "#B4EEB4" },
-    { name: "Verde Mar Escuro 3", value: "#9BCD9B" },
-    { name: "Verde Mar Escuro 4", value: "#698B69" },
-    { name: "Verde Mar 1", value: "#54FF9F" },
-    { name: "Verde Mar 2", value: "#4EEE94" },
-    { name: "Rosa Neblina 1", value: "#FFE4E1" },
-    { name: "Rosa Neblina 2", value: "#EED5D2" },
-    { name: "Rosa Neblina 3", value: "#CDB7B5" },
-    { name: "Rosa Neblina 4", value: "#8B7D7B" },
-    { name: "Azul Celeste 1", value: "#F0FFFF" },
-    { name: "Azul Celeste 2", value: "#E0EEEE" },
-    { name: "Azul Celeste 3", value: "#C1CDCD" },
-    { name: "Azul Celeste 4", value: "#838B8B" },
-    { name: "Azul Ardósia 1", value: "#836FFF" },
-    { name: "Azul Ardósia 2", value: "#7A67EE" },
-    { name: "Azul Ardósia 3", value: "#6959CD" },
-    { name: "Azul Ardósia 4", value: "#473C8B" },
-    { name: "Azul Real 1", value: "#4876FF" },
-    { name: "Azul Real 2", value: "#436EEE" },
-    { name: "Azul Real 3", value: "#3A5FCD" },
-    { name: "Azul Real 4", value: "#27408B" },
-    { name: "Azul 1", value: "#0000FF" },
-    { name: "Azul 2", value: "#0000EE" },
-    { name: "Azul 3", value: "#0000CD" },
-    { name: "Azul 4", value: "#00008B" },
-    { name: "Azul Dodger 1", value: "#1E90FF" },
-    { name: "Azul Dodger 2", value: "#1C86EE" },
-    { name: "Azul Dodger 3", value: "#1874CD" },
-    { name: "Azul Dodger 4", value: "#104E8B" },
-    { name: "Azul Aço 1", value: "#63B8FF" },
-    { name: "Azul Aço 2", value: "#5CACEE" },
-    { name: "Azul Aço 3", value: "#4F94CD" },
-    { name: "Azul Aço 4", value: "#36648B" },
-    { name: "Azul Céu Profundo 1", value: "#00BFFF" },
-    { name: "Azul Céu Profundo 2", value: "#00B2EE" },
-    { name: "Azul Céu Profundo 3", value: "#009ACD" },
-    { name: "Azul Céu Profundo 4", value: "#00688B" },
-    { name: "Azul Céu 1", value: "#87CEFF" },
-    { name: "Azul Céu 2", value: "#7EC0EE" },
-    { name: "Azul Céu 3", value: "#6CA6CD" },
-    { name: "Azul Céu 4", value: "#4A708B" },
-    { name: "Azul Céu Claro 1", value: "#B0E2FF" },
-    { name: "Azul Céu Claro 2", value: "#A4D3EE" },
-    { name: "Azul Céu Claro 3", value: "#8DB6CD" },
-    { name: "Azul Céu Claro 4", value: "#607B8B" },
-    { name: "Cinza Ardósia 1", value: "#C6E2FF" },
-    { name: "Cinza Ardósia 2", value: "#B9D3EE" },
-    { name: "Cinza Ardósia 3", value: "#9FB6CD" },
-    { name: "Tijolo 4", value: "#8B1A1A" },
-    { name: "Marrom 1", value: "#FF4040" },
-    { name: "Marrom 2", value: "#EE3B3B" },
-    { name: "Marrom 3", value: "#CD3333" },
-    { name: "Marrom 4", value: "#8B2323" },
-    { name: "Salmão 1", value: "#FF8C69" },
-    { name: "Salmão 2", value: "#EE8262" },
-    { name: "Salmão 3", value: "#CD7054" },
-    { name: "Salmão 4", value: "#8B4C39" },
-    { name: "Salmão Claro 1", value: "#FFA07A" },
-    { name: "Salmão Claro 2", value: "#EE9572" },
-    { name: "Salmão Claro 3", value: "#CD8162" },
-    { name: "Salmão Claro 4", value: "#8B5742" },
-    { name: "Laranja 1", value: "#FFA500" },
-    { name: "Laranja 2", value: "#EE9A00" },
-    { name: "Laranja 3", value: "#CD8500" },
-    { name: "Laranja 4", value: "#8B5A00" },
-    { name: "Laranja Escuro 1", value: "#FF7F00" },
-    { name: "Laranja Escuro 2", value: "#EE7600" },
-    { name: "Laranja Escuro 3", value: "#CD6600" },
-    { name: "Laranja Escuro 4", value: "#8B4500" },
-    { name: "Coral 1", value: "#FF7256" },
-    { name: "Coral 2", value: "#EE6A50" },
-    { name: "Coral 3", value: "#CD5B45" },
-    { name: "Coral 4", value: "#8B3E2F" },
-    { name: "Tomate 1", value: "#FF6347" },
-    { name: "Tomate 2", value: "#EE5C42" },
-    { name: "Tomate 3", value: "#CD4F39" },
-    { name: "Tomate 4", value: "#8B3626" },
-    { name: "Laranja Vermelho 1", value: "#FF4500" },
-    { name: "Laranja Vermelho 2", value: "#EE4000" },
-    { name: "Laranja Vermelho 3", value: "#CD3700" },
-    { name: "Laranja Vermelho 4", value: "#8B2500" },
-    { name: "Vermelho 1", value: "#FF0000" },
-    { name: "Vermelho 2", value: "#EE0000" },
-    { name: "Vermelho 3", value: "#CD0000" },
-    { name: "Vermelho 4", value: "#8B0000" },
-    { name: "Rosa Profundo 1", value: "#FF1493" },
-    { name: "Rosa Profundo 2", value: "#EE1289" },
-    { name: "Rosa Profundo 3", value: "#CD1076" },
-    { name: "Rosa Profundo 4", value: "#8B0A50" },
-    { name: "Rosa Choque 1", value: "#FF6EB4" },
-    { name: "Rosa Choque 2", value: "#EE6AA7" },
-    { name: "Ouro 2", value: "#EEC900" },
-    { name: "Rosa Choque 3", value: "#CD6090" },
-    { name: "Rosa Choque 4", value: "#8B3A62" },
-    { name: "Rosa 1", value: "#FFB5C5" },
-    { name: "Rosa 2", value: "#EEA9B8" },
-    { name: "Rosa 3", value: "#CD919E" },
-    { name: "Rosa 4", value: "#8B636C" },
-    { name: "Rosa Claro 1", value: "#FFAEB9" },
-    { name: "Rosa Claro 2", value: "#EEA2AD" },
-    { name: "Rosa Claro 3", value: "#CD8C95" },
-    { name: "Rosa Claro 4", value: "#8B5F65" },
-    { name: "Vermelho Violeta Pálido 1", value: "#FF82AB" },
-    { name: "Vermelho Violeta Pálido 2", value: "#EE799F" },
-    { name: "Vermelho Violeta Pálido 3", value: "#CD6889" },
-    { name: "Vermelho Violeta Pálido 4", value: "#8B475D" },
-    { name: "Marrom (Bordô) 1", value: "#FF34B3" },
-    { name: "Marrom (Bordô) 2", value: "#EE30A7" },
-    { name: "Marrom (Bordô) 3", value: "#CD2990" },
-    { name: "Marrom (Bordô) 4", value: "#8B1C62" },
-    { name: "Vermelho Violeta 1", value: "#FF3E96" },
-    { name: "Vermelho Violeta 2", value: "#EE3A8C" },
-    { name: "Vermelho Violeta 3", value: "#CD3278" },
-    { name: "Vermelho Violeta 4", value: "#8B2252" },
-    { name: "Magenta 1", value: "#FF00FF" },
-    { name: "Magenta 2", value: "#EE00EE" },
-    { name: "Magenta 3", value: "#CD00CD" },
-    { name: "Magenta 4", value: "#8B008B" },
-    { name: "Orquídea 1", value: "#FF83FA" },
-    { name: "Orquídea 2", value: "#EE7AE9" },
-    { name: "Orquídea 3", value: "#CD69C9" },
-    { name: "Orquídea 4", value: "#8B4789" },
-    { name: "Ameixa 1", value: "#FFBBFF" },
-    { name: "Ameixa 2", value: "#EEAEEE" },
-    { name: "Ameixa 3", value: "#CD96CD" },
-    { name: "Ameixa 4", value: "#8B668B" },
-    { name: "Orquídea Média 1", value: "#E066FF" },
-    { name: "Orquídea Média 2", value: "#D15FEE" },
-    { name: "Orquídea Média 3", value: "#B452CD" },
-    { name: "Orquídea Média 4", value: "#7A378B" },
-    { name: "Orquídea Escura 1", value: "#BF3EFF" },
-    { name: "Orquídea Escura 2", value: "#B23AEE" },
-    { name: "Orquídea Escura 3", value: "#9A32CD" },
-    { name: "Orquídea Escura 4", value: "#68228B" },
-    { name: "Roxo 1", value: "#9B30FF" },
-    { name: "Roxo 2", value: "#912CEE" },
-    { name: "Verde Mar 3", value: "#43CD80" },
-    { name: "Verde Mar 4", value: "#2E8B57" },
-    { name: "Verde Pálido 1", value: "#9AFF9A" },
-    { name: "Verde Pálido 2", value: "#90EE90" },
-    { name: "Verde Pálido 3", value: "#7CCD7C" },
-    { name: "Verde Pálido 4", value: "#548B54" },
-    { name: "Verde Primavera 1", value: "#00FF7F" },
-    { name: "Verde Primavera 2", value: "#00EE76" },
-    { name: "Verde Primavera 3", value: "#00CD66" },
-    { name: "Verde Primavera 4", value: "#008B45" },
-    { name: "Verde 1", value: "#00FF00" },
-    { name: "Verde 2", value: "#00EE00" },
-    { name: "Verde 3", value: "#00CD00" },
-    { name: "Verde 4", value: "#008B00" },
-    { name: "Chartreuse 1", value: "#7FFF00" },
-    { name: "Chartreuse 2", value: "#76EE00" },
-    { name: "Chartreuse 3", value: "#66CD00" },
-    { name: "Chartreuse 4", value: "#458B00" },
-    { name: "Verde Oliva 1", value: "#C0FF3E" },
-    { name: "Verde Oliva 2", value: "#B3EE3A" },
-    { name: "Verde Oliva 3", value: "#9ACD32" },
-    { name: "Verde Oliva 4", value: "#698B22" },
-    { name: "Verde Oliva Escuro 1", value: "#CAFF70" },
-    { name: "Verde Oliva Escuro 2", value: "#BCEE68" },
-    { name: "Verde Oliva Escuro 3", value: "#A2CD5A" },
-    { name: "Verde Oliva Escuro 4", value: "#6E8B3D" },
-    { name: "Cáqui 1", value: "#FFF68F" },
-    { name: "Cáqui 2", value: "#EEE685" },
-    { name: "Cáqui 3", value: "#CDC673" },
-    { name: "Cáqui 4", value: "#8B864E" },
-    { name: "Ouro Claro 1", value: "#FFEC8B" },
-    { name: "Ouro Claro 2", value: "#EEDC82" },
-    { name: "Ouro Claro 3", value: "#CDBE70" },
-    { name: "Ouro Claro 4", value: "#8B814C" },
-    { name: "Amarelo Claro 1", value: "#FFFFE0" },
-    { name: "Amarelo Claro 2", value: "#EEEED1" },
-    { name: "Amarelo Claro 3", value: "#CDCDB4" },
-    { name: "Amarelo Claro 4", value: "#8B8B7A" },
-    { name: "Amarelo 1", value: "#FFFF00" },
-    { name: "Amarelo 2", value: "#EEEE00" },
-    { name: "Amarelo 3", value: "#CDCD00" },
-    { name: "Amarelo 4", value: "#8B8B00" },
-    { name: "Ouro 1", value: "#FFD700" },
-    { name: "Ouro 3", value: "#CDAD00" },
-    { name: "Ouro 4", value: "#8B7500" },
-    { name: "Dourado 1", value: "#FFC125" },
-    { name: "Dourado 2", value: "#EEB422" },
-    { name: "Dourado 3", value: "#CD9B1D" },
-    { name: "Dourado 4", value: "#8B6914" },
-    { name: "Dourado Escuro 1", value: "#FFB90F" },
-    { name: "Dourado Escuro 2", value: "#EEAD0E" },
-    { name: "Dourado Escuro 3", value: "#CD950C" },
-    { name: "Dourado Escuro 4", value: "#8B658B" },
-    { name: "Marrom Rosado 1", value: "#FFC1C1" },
-    { name: "Marrom Rosado 2", value: "#EEB4B4" },
-    { name: "Marrom Rosado 3", value: "#CD9B9B" },
-    { name: "Marrom Rosado 4", value: "#8B6969" },
-    { name: "Vermelho Indiano 1", value: "#FF6A6A" },
-    { name: "Vermelho Indiano 2", value: "#EE6363" },
-    { name: "Vermelho Indiano 3", value: "#CD5555" },
-    { name: "Vermelho Indiano 4", value: "#8B3A3A" },
-    { name: "Siena 1", value: "#FF8247" },
-    { name: "Siena 2", value: "#EE7942" },
-    { name: "Siena 3", value: "#CD6839" },
-    { name: "Siena 4", value: "#8B4726" },
-    { name: "Bico de Burro 1", value: "#FFD39B" },
-    { name: "Bico de Burro 2", value: "#EEC591" },
-    { name: "Bico de Burro 3", value: "#CDAA7D" },
-    { name: "Bico de Burro 4", value: "#8B7355" },
-    { name: "Trigo 1", value: "#FFE7BA" },
-    { name: "Trigo 2", value: "#EED8AE" },
-    { name: "Trigo 3", value: "#CDBA96" },
-    { name: "Trigo 4", value: "#8B7E66" },
-    { name: "Castanho 1", value: "#FFA54F" },
-    { name: "Roxo 3", value: "#7D26CD" },
-    { name: "Roxo 4", value: "#551A8B" },
-    { name: "Roxo Médio 1", value: "#AB82FF" },
-    { name: "Roxo Médio 2", value: "#9F79EE" },
-    { name: "Roxo Médio 3", value: "#8968CD" },
-    { name: "Roxo Médio 4", value: "#5D478B" },
-    { name: "Cardo 1", value: "#FFE1FF" },
-    { name: "Cardo 2", value: "#EED2EE" },
-    { name: "Cardo 3", value: "#CDB5CD" },
-    { name: "Cardo 4", value: "#8B7B8B" },
-    { name: "Cinza 11", value: "#1C1C1C" },
-    { name: "Cinza 21", value: "#363636" },
-    { name: "Cinza 31", value: "#4F4F4F" },
-    { name: "Cinza 41", value: "#696969" },
-    { name: "Cinza 51", value: "#828282" },
-    { name: "Cinza 61", value: "#9C9C9C" },
-    { name: "Cinza 71", value: "#B5B5B5" },
-    { name: "Cinza 81", value: "#CFCFCF" },
-    { name: "Cinza 91", value: "#E8E8E8" },
-    { name: "Cinza Escuro", value: "#A9A9A9" },
-    { name: "Azul Escuro", value: "#00008B" },
-    { name: "Ciano Escuro", value: "#008B8B" },
-    { name: "Magenta Escuro", value: "#8B008B" },
-    { name: "Vermelho Escuro", value: "#8B0000" },
-    { name: "Verde Claro", value: "#90EE90" },
-    { name: "Chocolate 3", value: "#CD661D" },
-    { name: "Chocolate 4", value: "#8B4513" },
-    { name: "Tijolo 1", value: "#FF3030" },
-    { name: "Tijolo 2", value: "#EE2C2C" },
-    { name: "Tijolo 3", value: "#CD2626" },
-    { name: "Castanho 2", value: "#EE9A49" },
-    { name: "Castanho 3", value: "#CD853F" },
-    { name: "Castanho 4", value: "#8B5A2B" },
-    { name: "Chocolate 1", value: "#FF7F24" },
-    { name: "Chocolate 2", value: "#EE7621" }
+    { name: "Cardo", value: "#D8BFD8" }
   ];
 
   function populateOptions() {
@@ -1335,6 +1085,6 @@ BCF 0098`;
     renderSheet();
   });
 </script>
-
+</script>
 </body>
 </html>
