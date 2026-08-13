@@ -272,13 +272,7 @@
   <header class="title">
     <div class="eyebrow">Gerador de etiquetas · folha A4</div>
     <h1>Gerador de Etiquetas</h1>
-    <!-- <p>Monte sequências de códigos, ajuste medidas com precisão de milímetro e exporte a folha pronta para impressão.</p> -->
-    <div class="ruler" aria-hidden="true">
-      <!-- <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i> -->
-    </div>
+    <div class="ruler" aria-hidden="true"></div>
   </header>
 
   <!-- ORIGEM DOS CÓDIGOS -->
@@ -320,7 +314,6 @@
           </select>
         </div>
         
-        <!-- CAMPO DE TAMANHO/MEDIDA (SUFIXO) -->
         <div class="field">
           <label for="seq-suffix">Tamanho / Medida (Sufixo)</label>
           <input id="seq-suffix" type="text" value="45" placeholder="Ex: 45, 13, 60">
@@ -346,6 +339,17 @@
               <option value="5">Após 5 dígitos (CR 25345/...)</option>
             </select>
             <p class="hint" style="margin-top: 4px;">A barra será inserida automaticamente nos números que tiverem essa quantidade de dígitos.</p>
+          </div>
+          
+          <div class="field">
+            <label for="display-format">Formato de exibição</label>
+            <select id="display-format">
+              <option value="none">BR1904 (sem separador)</option>
+              <option value="space" selected>BR 1904 (espaço)</option>
+              <option value="hyphen">BR-1904 (hífen)</option>
+              <option value="slash">BR / 1904 (barra)</option>
+            </select>
+            <p class="hint" style="margin-top: 4px;">Como os códigos serão exibidos nas etiquetas.</p>
           </div>
         </div>
 
@@ -408,7 +412,6 @@
         <input id="margin-right" class="margin-field" type="number" value="0.381" min="0" max="10" step="0.001" disabled>
       </div>
     </div>
-    <!-- <p class="hint">As margens seguem o padrão da caixa "Configurar Página" do editor de etiquetas. Clique nos botões "Dimensões travadas" ou "Margens travadas" para liberar a edição.</p> -->
     <p class="hint" id="layout-info"></p>
   </div>
 
@@ -554,7 +557,7 @@ BCF 0098`;
 
   function buildCodes(){
     if(currentMode === 'seq'){
-      const prefix = document.getElementById('prefix').value.trim();
+      const prefix = document.getElementById('prefix').value.trim().toUpperCase();
       const start = parseInt(document.getElementById('start').value, 10);
       const end = parseInt(document.getElementById('end').value, 10);
       const digits = parseInt(document.getElementById('digits').value, 10);
@@ -576,14 +579,16 @@ BCF 0098`;
     } else {
       const raw = document.getElementById('list-input').value;
       const slashPos = parseInt(document.getElementById('slash-position').value, 10);
-      
+      const displayFormat = document.getElementById('display-format').value;
+
       let codes = raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
-      
+
+      // Primeiro, aplica a barra automática (se ativada)
       if (slashPos > 0) {
         codes = codes.map(code => {
           const match = code.match(/^([A-Za-z\s]+)(\d+)$/);
           if (match && match[2].length > slashPos) {
-            const prefix = match[1];
+            const prefix = match[1].trim().toUpperCase();
             const number = match[2];
             const formatted = number.slice(0, slashPos) + '/' + number.slice(slashPos);
             return prefix + formatted;
@@ -591,7 +596,29 @@ BCF 0098`;
           return code;
         });
       }
-      
+
+      // Depois, aplica o formato de exibição escolhido
+      codes = codes.map(code => {
+        // Tenta extrair prefixo + número
+        let match = code.match(/^([A-Za-z\s]+?)(\d+)$/);
+        if (!match) return code; // mantém original se não encaixar
+
+        let prefix = match[1].trim().toUpperCase(); // <-- CONVERTE PARA MAIÚSCULAS
+        let number = match[2];
+
+        switch (displayFormat) {
+          case 'space':
+            return prefix + ' ' + number;
+          case 'hyphen':
+            return prefix + '-' + number;
+          case 'slash':
+            return prefix + ' / ' + number;
+          case 'none':
+          default:
+            return prefix + number;
+        }
+      });
+
       return codes;
     }
   }
@@ -1084,7 +1111,6 @@ BCF 0098`;
     populateOptions();
     renderSheet();
   });
-</script>
 </script>
 </body>
 </html>
