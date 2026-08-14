@@ -161,15 +161,57 @@
     .lock-btn.unlocked{ background:var(--forest); color:#fff; border-color:var(--forest); }
     .lock-btn.unlocked:hover{ background:var(--forest-deep); }
 
-    textarea{ min-height:92px; resize:vertical; }
+    .layout-status-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      background:var(--danger); color:#fff;
+      padding:4px 14px; border-radius:12px;
+      font-size:10px; font-weight:700; letter-spacing:0.5px;
+      text-transform:uppercase;
+      margin-left:auto;
+    }
+    .layout-status-badge.unlocked {
+      background:var(--forest);
+    }
+
+    textarea#list-input {
+      min-height: 250px;
+      resize: vertical;
+      font-size: 15px;
+      padding: 14px 12px;
+      line-height: 1.6;
+    }
+
     .hint{ font-size:12px; color:var(--muted); margin-top:12px; line-height:1.5; }
     .banner{
-      display:flex; align-items:flex-start; gap:10px;
+      display:flex; align-items:center; gap:10px;
       background:var(--line-soft); border:1px solid var(--line);
       border-radius:6px; padding:12px 14px; margin-bottom:16px;
       font-size:12.5px; color:var(--ink-soft); line-height:1.5;
+      flex-wrap:wrap;
     }
     .banner b{ color:var(--forest); }
+    .banner-actions {
+      display:flex; gap:8px; margin-left:auto; flex-wrap:wrap;
+    }
+    .banner-actions button {
+      padding:6px 16px; border:none; border-radius:20px;
+      font-family:'Public Sans', sans-serif;
+      font-size:12px; font-weight:600; cursor:pointer;
+      touch-action: manipulation;
+      transition: background .15s ease;
+    }
+    .banner-actions .btn-unlock {
+      background:var(--brass); color:#fff;
+    }
+    .banner-actions .btn-unlock:hover { background:var(--brass-deep); }
+    .banner-actions .btn-lock {
+      background:var(--danger); color:#fff;
+    }
+    .banner-actions .btn-lock:hover { background:#7a3a2f; }
+
+    .layout-hidden #layout-fields-container {
+      display: none !important;
+    }
 
     .actions{ display:flex; flex-direction: column; gap:12px; align-items:stretch; }
     button.primary{
@@ -245,6 +287,12 @@
       }
       .field input[type="number"]{ padding-right: 40px; }
       button.primary{ font-size: 17px; padding: 16px; }
+      .banner-actions { margin-left:0; width:100%; }
+      .banner-actions button { flex:1; text-align:center; }
+      textarea#list-input {
+        min-height: 200px;
+        font-size: 16px;
+      }
     }
 
     @media (max-width: 380px){
@@ -264,7 +312,6 @@
 
 <div class="app">
 
-  <!-- BOTÃO PARA INSTALAR COMO APP NO CELULAR -->
   <div id="install-container">
     <button id="install-btn">📲 Instalar como App (Gerador de Etiquetas)</button>
   </div>
@@ -316,7 +363,7 @@
         
         <div class="field">
           <label for="seq-suffix">Tamanho / Medida (Sufixo)</label>
-          <input id="seq-suffix" type="text" value="45" placeholder="Ex: 45, 13, 60">
+          <input id="seq-suffix" type="text" value="" placeholder="Ex: 45, 13, 60">
           <p class="hint" style="margin-top: 4px; font-size: 11px;">Deixe em branco para gerar sem barra. Ex: CR 001/45</p>
         </div>
       </div>
@@ -338,7 +385,7 @@
               <option value="2">Após 2 dígitos (CR 25/345)</option>
               <option value="5">Após 5 dígitos (CR 25345/...)</option>
             </select>
-            <p class="hint" style="margin-top: 4px;">A barra será inserida automaticamente nos números que tiverem essa quantidade de dígitos.</p>
+            <p class="hint" style="margin-top: 4px;">⚠️ A barra só será inserida em códigos que começam com <b>CR</b> (CR, CRF, CRP, etc.). Ex: CR25345 → CR 253/45</p>
           </div>
           
           <div class="field">
@@ -353,63 +400,70 @@
           </div>
         </div>
 
-        <!-- <button class="primary" onclick="loadExample()" style="background:var(--brass); margin-top: 12px; padding: 10px;">📋 Carregar Exemplo (Vários tipos)</button> -->
+        <button class="primary" onclick="loadExample()" style="background:var(--brass); margin-top: 12px; padding: 10px;">📋 Carregar Exemplo (Vários tipos)</button>
       </div>
     </div>
   </div>
 
   <!-- LAYOUT DA FOLHA -->
-  <div class="panel">
+  <div class="panel" id="layout-panel">
     <div class="panel-head">
       <div class="step-badge">2</div>
       <h2>Layout da folha A4</h2>
+      <span class="layout-status-badge" id="layout-status-badge">🔒 Bloqueado</span>
     </div>
 
     <div class="banner">
-      📏 Apenas o tamanho do texto se ajusta automaticamente — ele encolhe até caber dentro da etiqueta, mantendo a leitura padronizada em toda a folha.
-    </div>
-
-    <div class="panel-head" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">
-      <h2 style="font-size:14px">Dimensões da etiqueta</h2>
-      <button type="button" class="lock-btn" id="dim-lock-btn" onclick="toggleDimLock()">🔒 Dimensões travadas</button>
-    </div>
-
-    <div class="grid-fields" style="margin-top: 16px;">
-      <div class="field">
-        <label for="cellw">Largura da etiqueta (cm)</label>
-        <input id="cellw" class="dimension-field" type="number" value="1.50" min="0.3" max="21" step="0.01" disabled>
-      </div>
-      <div class="field">
-        <label for="cellh">Altura da etiqueta (cm)</label>
-        <input id="cellh" class="dimension-field" type="number" value="0.50" min="0.3" max="29" step="0.01" disabled>
-      </div>
-      <div class="field">
-        <label for="gap">Espaço entre etiquetas (mm)</label>
-        <input id="gap" class="dimension-field" type="number" value="0" min="0" max="5" step="0.5" disabled>
+      <span>📏 As configurações de layout estão <b>ocultas</b> por padrão.</span>
+      <div class="banner-actions">
+        <button class="btn-unlock" onclick="unlockLayout()">🔑 Liberar</button>
+        <button class="btn-lock" onclick="lockLayout()">🔒 Bloquear</button>
       </div>
     </div>
 
-    <div class="panel-head" style="margin-top:16px;border-top:1px solid var(--line-soft);padding-top:16px;border-bottom:none; margin-bottom:0; padding-bottom:0;">
-      <h2 style="font-size:14px">Margens da página</h2>
-      <button type="button" class="lock-btn" id="lock-btn" onclick="toggleMarginLock()">🔒 Margens travadas</button>
-    </div>
+    <div id="layout-fields-container" style="display:none;">
+      <div class="panel-head" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">
+        <h2 style="font-size:14px">Dimensões da etiqueta</h2>
+        <button type="button" class="lock-btn" id="dim-lock-btn" onclick="toggleDimLock()">🔒 Dimensões travadas</button>
+      </div>
 
-    <div class="grid-fields" style="margin-top:16px;">
-      <div class="field">
-        <label for="margin-top">Superior (cm)</label>
-        <input id="margin-top" class="margin-field" type="number" value="0.508" min="0" max="10" step="0.001" disabled>
+      <div class="grid-fields" style="margin-top: 16px;">
+        <div class="field">
+          <label for="cellw">Largura da etiqueta (cm)</label>
+          <input id="cellw" class="dimension-field" type="number" value="1.50" min="0.3" max="21" step="0.01" disabled>
+        </div>
+        <div class="field">
+          <label for="cellh">Altura da etiqueta (cm)</label>
+          <input id="cellh" class="dimension-field" type="number" value="0.50" min="0.3" max="29" step="0.01" disabled>
+        </div>
+        <div class="field">
+          <label for="gap">Espaço entre etiquetas (mm)</label>
+          <input id="gap" class="dimension-field" type="number" value="0" min="0" max="5" step="0.5" disabled>
+        </div>
       </div>
-      <div class="field">
-        <label for="margin-left">Esquerda (cm)</label>
-        <input id="margin-left" class="margin-field" type="number" value="0.381" min="0" max="10" step="0.001" disabled>
+
+      <div class="panel-head" style="margin-top:16px;border-top:1px solid var(--line-soft);padding-top:16px;border-bottom:none; margin-bottom:0; padding-bottom:0;">
+        <h2 style="font-size:14px">Margens da página</h2>
+        <button type="button" class="lock-btn" id="lock-btn" onclick="toggleMarginLock()">🔒 Margens travadas</button>
       </div>
-      <div class="field">
-        <label for="margin-bottom">Inferior (cm)</label>
-        <input id="margin-bottom" class="margin-field" type="number" value="0.635" min="0" max="10" step="0.001" disabled>
-      </div>
-      <div class="field">
-        <label for="margin-right">Direita (cm)</label>
-        <input id="margin-right" class="margin-field" type="number" value="0.381" min="0" max="10" step="0.001" disabled>
+
+      <div class="grid-fields" style="margin-top:16px;">
+        <div class="field">
+          <label for="margin-top">Superior (cm)</label>
+          <input id="margin-top" class="margin-field" type="number" value="0.508" min="0" max="10" step="0.001" disabled>
+        </div>
+        <div class="field">
+          <label for="margin-left">Esquerda (cm)</label>
+          <input id="margin-left" class="margin-field" type="number" value="0.381" min="0" max="10" step="0.001" disabled>
+        </div>
+        <div class="field">
+          <label for="margin-bottom">Inferior (cm)</label>
+          <input id="margin-bottom" class="margin-field" type="number" value="0.635" min="0" max="10" step="0.001" disabled>
+        </div>
+        <div class="field">
+          <label for="margin-right">Direita (cm)</label>
+          <input id="margin-right" class="margin-field" type="number" value="0.381" min="0" max="10" step="0.001" disabled>
+        </div>
       </div>
     </div>
     <p class="hint" id="layout-info"></p>
@@ -467,6 +521,7 @@
   let currentMode = 'seq';
   let marginsLocked = true;
   let dimsLocked = true;
+  let layoutUnlocked = false;
 
   // --- SCRIPT PARA INSTALAR COMO APP (PWA) ---
   let deferredPrompt;
@@ -487,37 +542,75 @@
     }
   });
 
-  function setMode(mode){
-    currentMode = mode;
-    document.getElementById('mode-seq').style.display = mode === 'seq' ? 'block' : 'none';
-    document.getElementById('mode-list').style.display = mode === 'list' ? 'block' : 'none';
-    document.getElementById('btn-mode-seq').classList.toggle('active', mode === 'seq');
-    document.getElementById('btn-mode-list').classList.toggle('active', mode === 'list');
+  // ============================================================
+  // FUNÇÕES PARA LIBERAR/BLOQUEAR O LAYOUT
+  // ============================================================
+  function unlockLayout() {
+    const senha = prompt('Digite a senha para liberar as configurações de layout:');
+    if (senha === '@321') {
+      layoutUnlocked = true;
+      document.getElementById('layout-status-badge').textContent = '🔓 Liberado';
+      document.getElementById('layout-status-badge').classList.add('unlocked');
+      
+      document.getElementById('layout-fields-container').style.display = 'block';
+      
+      document.querySelectorAll('.dimension-field, .margin-field').forEach(el => {
+        el.disabled = false;
+      });
+      
+      document.querySelectorAll('.lock-btn').forEach(el => {
+        el.style.opacity = '1';
+        el.style.pointerEvents = 'auto';
+      });
+      
+      alert('✅ Configurações de layout liberadas! Você pode ajustar as medidas agora.');
+    } else if (senha !== null) {
+      alert('❌ Senha incorreta! As configurações permanecem bloqueadas.');
+    }
   }
 
-  function loadExample() {
-    const textarea = document.getElementById('list-input');
-    textarea.value = `BP 001
-BPZ 001
-BPP 001
-BPF 001
-BPZF 001
-AR 014
-ARP 014
-ARF 001
-PG 001
-PGP 001
-PGF 001
-CR 25345
-CRP 25345
-CRF 253045
-BC 0098
-BCP 0098
-BCF 0098`;
-    renderSheet();
+  function lockLayout() {
+    if (!layoutUnlocked) {
+      alert('⚠️ O layout já está bloqueado.');
+      return;
+    }
+    
+    const confirmar = confirm('🔒 Deseja realmente bloquear as configurações de layout novamente?');
+    if (!confirmar) return;
+    
+    layoutUnlocked = false;
+    document.getElementById('layout-status-badge').textContent = '🔒 Bloqueado';
+    document.getElementById('layout-status-badge').classList.remove('unlocked');
+    
+    document.getElementById('layout-fields-container').style.display = 'none';
+    
+    document.querySelectorAll('.dimension-field, .margin-field').forEach(el => {
+      el.disabled = true;
+    });
+    
+    document.querySelectorAll('.lock-btn').forEach(el => {
+      el.style.opacity = '0.5';
+      el.style.pointerEvents = 'none';
+    });
+    
+    dimsLocked = true;
+    marginsLocked = true;
+    document.getElementById('dim-lock-btn').textContent = '🔒 Dimensões travadas';
+    document.getElementById('dim-lock-btn').classList.remove('unlocked');
+    document.getElementById('lock-btn').textContent = '🔒 Margens travadas';
+    document.getElementById('lock-btn').classList.remove('unlocked');
+    
+    alert('🔒 Layout bloqueado com sucesso!');
   }
 
+  // ============================================================
+  // FUNÇÕES DE TRAVA (DIMENSÕES E MARGENS)
+  // ============================================================
   function toggleDimLock(){
+    if (!layoutUnlocked) {
+      alert('🔒 As configurações de layout estão bloqueadas. Clique em "Liberar" e digite a senha @321.');
+      return;
+    }
     dimsLocked = !dimsLocked;
     document.querySelectorAll('.dimension-field').forEach(el => { el.disabled = dimsLocked; });
     const btn = document.getElementById('dim-lock-btn');
@@ -531,6 +624,10 @@ BCF 0098`;
   }
 
   function toggleMarginLock(){
+    if (!layoutUnlocked) {
+      alert('🔒 As configurações de layout estão bloqueadas. Clique em "Liberar" e digite a senha @321.');
+      return;
+    }
     marginsLocked = !marginsLocked;
     document.querySelectorAll('.margin-field').forEach(el => { 
       el.disabled = marginsLocked;
@@ -544,6 +641,33 @@ BCF 0098`;
       btn.textContent = '🔓 Margens liberadas — clique para travar';
       btn.classList.add('unlocked');
     }
+  }
+
+  function setMode(mode){
+    currentMode = mode;
+    document.getElementById('mode-seq').style.display = mode === 'seq' ? 'block' : 'none';
+    document.getElementById('mode-list').style.display = mode === 'list' ? 'block' : 'none';
+    document.getElementById('btn-mode-seq').classList.toggle('active', mode === 'seq');
+    document.getElementById('btn-mode-list').classList.toggle('active', mode === 'list');
+  }
+
+  function loadExample() {
+    const textarea = document.getElementById('list-input');
+    textarea.value = `BR 1904
+BR 626
+BRF 1994
+CR 25345
+CR 100950
+CRF 253045
+CRP 25345
+BPZ 001
+BP 001
+BPP 001
+BRP 001
+AR 014
+PG 001
+BC 0098`;
+    renderSheet();
   }
 
   function getCellSize(){
@@ -583,27 +707,32 @@ BCF 0098`;
 
       let codes = raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
 
-      // Primeiro, aplica a barra automática (se ativada)
-      if (slashPos > 0) {
-        codes = codes.map(code => {
-          const match = code.match(/^([A-Za-z\s]+)(\d+)$/);
-          if (match && match[2].length > slashPos) {
-            const prefix = match[1].trim().toUpperCase();
-            const number = match[2];
-            const formatted = number.slice(0, slashPos) + '/' + number.slice(slashPos);
-            return prefix + formatted;
-          }
-          return code;
-        });
-      }
-
-      // Depois, aplica o formato de exibição escolhido
+      // ============================================================
+      // PRIMEIRO: Extrai prefixo + número e aplica a barra (se começar com CR)
+      // ============================================================
       codes = codes.map(code => {
-        // Tenta extrair prefixo + número
         let match = code.match(/^([A-Za-z\s]+?)(\d+)$/);
-        if (!match) return code; // mantém original se não encaixar
+        if (!match) return code;
 
-        let prefix = match[1].trim().toUpperCase(); // <-- CONVERTE PARA MAIÚSCULAS
+        let prefix = match[1].trim().toUpperCase();
+        let number = match[2];
+
+        // SÓ APLICA A BARRA SE O PREFIXO COMEÇAR COM "CR" (CR, CRF, CRP, etc.)
+        if (prefix.startsWith('CR') && slashPos > 0 && number.length > slashPos) {
+          number = number.slice(0, slashPos) + '/' + number.slice(slashPos);
+        }
+
+        return prefix + number; // Retorna prefixo + número (sem espaço ainda)
+      });
+
+      // ============================================================
+      // DEPOIS: Aplica o formato de exibição escolhido
+      // ============================================================
+      codes = codes.map(code => {
+        let match = code.match(/^([A-Za-z\s]+?)(\d+|\d+\/\d+)$/);
+        if (!match) return code;
+
+        let prefix = match[1].trim().toUpperCase();
         let number = match[2];
 
         switch (displayFormat) {
@@ -803,19 +932,16 @@ BCF 0098`;
     const selectedFont = document.getElementById('font-select').value;
     const selectedColor = document.getElementById('color-select').value;
 
-    // Pega as informações da fonte selecionada
     const fontInfo = fontMap[selectedFont];
-    let pdfFontName = 'helvetica'; // fallback padrão
+    let pdfFontName = 'helvetica';
 
     if (fontInfo && fontInfo.url) {
       try {
-        // Baixa a fonte TTF
         const response = await fetch(fontInfo.url);
         if (!response.ok) throw new Error('Fonte não encontrada');
         const fontData = await response.arrayBuffer();
         const base64 = btoa(String.fromCharCode(...new Uint8Array(fontData)));
         
-        // Registra a fonte no jsPDF
         const fontFileName = fontInfo.name + '.ttf';
         doc.addFileToVFS(fontFileName, base64);
         doc.addFont(fontFileName, fontInfo.name, 'bold');
@@ -825,14 +951,12 @@ BCF 0098`;
         pdfFontName = 'helvetica';
       }
     } else {
-      // Fontes padrão do jsPDF
       pdfFontName = 'helvetica';
       if (selectedFont.includes('Courier') || selectedFont.includes('monospace')) {
         pdfFontName = 'courier';
       }
     }
 
-    // Calcula o tamanho da fonte
     const fontSize = fitFontSizePDF(doc, codes, layout.cellW - 1, layout.cellH - 0.6);
     const totalPages = Math.ceil(codes.length / layout.perPage);
 
@@ -1110,6 +1234,15 @@ BCF 0098`;
   window.addEventListener('DOMContentLoaded', () => {
     populateOptions();
     renderSheet();
+    
+    document.getElementById('layout-fields-container').style.display = 'none';
+    document.querySelectorAll('.dimension-field, .margin-field').forEach(el => {
+      el.disabled = true;
+    });
+    document.querySelectorAll('.lock-btn').forEach(el => {
+      el.style.opacity = '0.5';
+      el.style.pointerEvents = 'none';
+    });
   });
 </script>
 </body>
